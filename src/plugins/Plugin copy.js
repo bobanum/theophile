@@ -1,9 +1,5 @@
 export default class Plugin extends HTMLElement {
-	static tagName = "th-plugin";
-	static init() {
-		customElements.define(this.tagName, this);
-	}
-	static async init0(Theophile) {
+	static async init(Theophile) {
 		this.Theophile = Theophile;
 		this.loadConfig();
 		this.linkPromises = this.loadStyles();

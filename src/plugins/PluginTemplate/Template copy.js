@@ -1,32 +1,13 @@
 import Plugin from "../Plugin.js";
 export default class Template extends Plugin {
-	static tagName = "th-template";
-	constructor() {
-		super();
-		this.attachShadow({ mode: "open" });
-
-		this.href = this.getAttribute("href");
-	}
-	connectedCallback() {
-		this.load(this.href).then(template => {
-			template = template.querySelector("template");
-			if (template.hasAttribute("href")) {
-				let link = document.createElement("link");
-				link.rel = "stylesheet";
-				link.href = template.getAttribute("href");
-				this.shadowRoot.appendChild(link);
-			}
-			this.shadowRoot.appendChild(template.content.cloneNode(true));
-		});
-	}
 	static async init(Theophile) {
-		super.init();
-		document.body.style.display = "contents";
+		await super.init(Theophile);
+		this.processiframes = (this.processiframes === undefined) ? true : this.processiframes;
 	}
-	// static get url() {
-	// 	return this.Theophile.siteURL("template.html");
-	// }
-	async load(url = this.url) {
+	static get url() {
+		return this.Theophile.siteURL("template.html");
+	}
+	static async load(url = this.url) {
 		return new Promise(resolve => {
 			const xhr = new XMLHttpRequest();
 			xhr.open("get", url);
@@ -35,6 +16,7 @@ export default class Template extends Plugin {
 				if (e.target.status !== 200) {
 					return resolve(false);
 				}
+				console.trace("Template loaded from " + url);
 				return resolve(e.target.response);
 			});
 			xhr.send();
@@ -51,8 +33,20 @@ export default class Template extends Plugin {
 		this.template = await this.load(this.Theophile.appURL("defaults/template.html"));
 		this.adaptUrl(this.template, url => this.Theophile.appURL(`defaults/${url}`));
 		return this.template;
+		// this.template
+		// 	.querySelectorAll("[src],[href],[data]")
+		// 	.forEach(element => {
+
+		// 		console.log(element);
+		// 		["src", "href", "data"].forEach(name => {
+		// 			const url = element.getAttribute(name);
+		// 			if (url) {
+		// 				element.setAttribute(name, this.Theophile.siteURL(url));
+		// 			}
+		// 		});
+		// 	});
 	}
-	adaptUrl(template, urlFn) {
+	static adaptUrl(template, urlFn) {
 		template
 			.querySelectorAll("[src],[href],[data]")
 			.forEach(element => {
@@ -191,5 +185,3 @@ export default class Template extends Plugin {
 		return figure;
 	}
 }
-Template.init();
-// customElements.define('th-template', Template);

@@ -1,6 +1,5 @@
 import Plugin from "../Plugin.js";
 export default class Template extends Plugin {
-	static tagName = "th-template";
 	constructor() {
 		super();
 		this.attachShadow({ mode: "open" });
@@ -20,7 +19,6 @@ export default class Template extends Plugin {
 		});
 	}
 	static async init(Theophile) {
-		super.init();
 		document.body.style.display = "contents";
 	}
 	// static get url() {
@@ -35,6 +33,7 @@ export default class Template extends Plugin {
 				if (e.target.status !== 200) {
 					return resolve(false);
 				}
+				console.trace("Template loaded from " + url);
 				return resolve(e.target.response);
 			});
 			xhr.send();
@@ -192,4 +191,4 @@ export default class Template extends Plugin {
 	}
 }
 Template.init();
-// customElements.define('th-template', Template);
+customElements.define('th-template', Template);

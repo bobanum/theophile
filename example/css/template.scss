@@ -1,21 +1,15 @@
-@import url("https://fonts.googleapis.com/css2?family=Unna:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Cormorant+Infant:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 :root, :host {
-	--hue: -80;
-	--sat: 100%;
-	--lum: 20%;
-}
-html {
-	height: 100%;
-	font-family: "Unna", serif;
+	--h: -80;
+	--s: 100%;
+	--l: 20%;
 	font-family: "Cormorant Infant", serif;
 	font-size: 22px;
-}
-body {
-	height: 100%;
 	margin: 0;
-	background-color: hsl(var(--hue), var(--sat), var(--lum));
+	background-color: hsl(var(--h), var(--s), var(--l));
 	color: white;
+	display: flex;
+	flex-direction: column;
 }
 #app {
 	min-height: 100%;
@@ -26,7 +20,7 @@ body {
 	}
 	& > header,
 	& > footer {
-		background-color: hsl(var(--hue), var(--sat), 10%);
+		background-color: hsl(var(--h), var(--s), 10%);
 	}
 }
 p,
