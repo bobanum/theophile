@@ -1,6 +1,7 @@
 export default class Plugin extends HTMLElement {
 	static tagName = "th-plugin";
-	static init() {
+	static init(meta) {
+		this.meta = meta;
 		customElements.define(this.tagName, this);
 	}
 	static async init0(Theophile) {
@@ -84,6 +85,33 @@ export default class Plugin extends HTMLElement {
 				element.style.setProperty(property, style[property]);
 			}
 		}
+		return this;
+	}
+	get baseUrl() {
+		return this.constructor.baseUrl;
+	}
+	static get baseUrl() {
+		if (!this._baseUrl) {
+			this.baseUrl = this.meta.url;
+		}
+		return this._baseUrl;
+	}
+	static set baseUrl(value) {
+		if (typeof value === "string") {
+			value = new URL(value.replace(/[^/]+\.js$/, ""));
+		}
+		this._baseUrl = value;
+	}
+	addStylesheet(url) {
+		if (!url) {
+			url = this.baseUrl + "style.css";
+		}
+
+		console.log(url);
+		const link = document.createElement("link");
+		link.rel = "stylesheet";
+		link.href = url;
+		this.shadowRoot.insertBefore(link, this.shadowRoot.firstChild);
 		return this;
 	}
 }

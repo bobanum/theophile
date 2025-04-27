@@ -1,29 +1,14 @@
 @import "pin";
-#th-toc {
-    --speed: 500ms;
+:host(.pinned) {
+    --speed: 200ms;
     --width: 27ch;
     --trigger-width: 1ch;
     --delay: 500ms;
     position: fixed;
-    box-sizing: border-box;
+    bottom: 0.5rem;
     left: calc(-1 * var(--width) + 0.25px);
     top: 0.5rem;
-    bottom: 0.5rem;
-    line-height: 0.9;
-    background-color: hsl(0, 0%, 95%);
-    color: black;
-    padding: 0.5em 0.5ch;
-    border-top-right-radius: var(--trigger-width);
-    border-bottom-right-radius: var(--trigger-width);
-    border: 3px solid hsl(0, 0%, 80%);
-    border-left: none;
-    border-width: 1px 3px;
     width: var(--width);
-    transition-property: left;
-    transition-duration: var(--speed);
-    transition-timing-function: ease-in;
-    transition-delay: 0ms;
-    overflow: visible;
     .th-toc-btn-pin {
         position: absolute;
         z-index: 1000;
@@ -41,22 +26,43 @@
 
         &::before {
             content: "push_pin";
-            font-family: "Material Icons";
+            content: "📌";
+            // font-family: "Material Icons";
         }
     }
+}
+:host(.pinned:hover) {
+    // IN transition
+    // transition: left 20ms;
+    transition-delay: var(--delay);
+    transition-timing-function: ease-out;
+    left: 0;
+    box-shadow: 0.2ch 0 0.3ch #0008;
+}
+
+:host {
+    background-color: hsl(0, 0%, 95%);
+    border-bottom-right-radius: var(--trigger-width);
+    border-left: none;
+    border-top-right-radius: var(--trigger-width);
+    border-width: 1px 3px;
+    border: 3px solid hsl(0, 0%, 80%);
+    box-sizing: border-box;
+    color: black;
+    display: block;
+    position: relative;
+    line-height: 0.9;
+    overflow: visible;
+    padding: 0.5em 0.5ch;
+    transition-delay: 0ms;
+    transition-duration: var(--speed);
+    transition-property: left;
+    transition-timing-function: ease-in;
     .th-toc-no-heading::marker {
         content: "";
     }
     &:empty {
         display: none;
-    }
-    &:hover {
-        // IN transition
-        // transition: left 20ms;
-        transition-delay: var(--delay);
-        transition-timing-function: ease-out;
-        left: 0;
-        box-shadow: 0.2ch 0 0.3ch #0008;
     }
     &::after {
         // content: "toc";

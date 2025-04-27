@@ -5,58 +5,43 @@
   height: auto;
   gap: 1em;
 }
-.th-toc-pin #th-toc {
+.th-toc-pin th-toc {
   position: sticky;
   order: -1;
   align-self: flex-start;
   left: auto !important;
 }
-.th-toc-pin #th-toc .th-toc-btn-pin {
+.th-toc-pin th-toc .th-toc-btn-pin {
   opacity: 1;
   color: #ff0;
   text-shadow: none;
 }
-.th-toc-pin #th-toc .th-toc-btn-pin::before {
+.th-toc-pin th-toc .th-toc-btn-pin::before {
   margin-left: 1px;
   margin-top: 1px;
 }
-.th-toc-pin #th-toc::after {
+.th-toc-pin th-toc::after {
   display: none;
 }
-.th-toc-pin #th-toc > ul {
+.th-toc-pin th-toc > ul {
   overflow: visible;
 }
-.th-toc-pin #th-toc ul {
+.th-toc-pin th-toc ul {
   display: block !important;
 }
 
-#th-toc {
-  --speed: 500ms;
+:host(.pinned) {
+  --speed: 200ms;
   --width: 27ch;
   --trigger-width: 1ch;
   --delay: 500ms;
   position: fixed;
-  box-sizing: border-box;
+  bottom: 0.5rem;
   left: calc(-1 * var(--width) + 0.25px);
   top: 0.5rem;
-  bottom: 0.5rem;
-  line-height: 0.9;
-  background-color: hsl(0, 0%, 95%);
-  color: black;
-  padding: 0.5em 0.5ch;
-  border-top-right-radius: var(--trigger-width);
-  border-bottom-right-radius: var(--trigger-width);
-  border: 3px solid hsl(0, 0%, 80%);
-  border-left: none;
-  border-width: 1px 3px;
   width: var(--width);
-  transition-property: left;
-  transition-duration: var(--speed);
-  transition-timing-function: ease-in;
-  transition-delay: 0ms;
-  overflow: visible;
 }
-#th-toc .th-toc-btn-pin {
+:host(.pinned) .th-toc-btn-pin {
   position: absolute;
   z-index: 1000;
   right: 0.25ch;
@@ -71,23 +56,44 @@
   text-shadow: 1px 1px 2px black;
   border-radius: 100%;
 }
-#th-toc .th-toc-btn-pin::before {
+:host(.pinned) .th-toc-btn-pin::before {
   content: "push_pin";
-  font-family: "Material Icons";
+  content: "📌";
 }
-#th-toc .th-toc-no-heading::marker {
-  content: "";
-}
-#th-toc:empty {
-  display: none;
-}
-#th-toc:hover {
+
+:host(.pinned:hover) {
   transition-delay: var(--delay);
   transition-timing-function: ease-out;
   left: 0;
   box-shadow: 0.2ch 0 0.3ch rgba(0, 0, 0, 0.5333333333);
 }
-#th-toc::after {
+
+:host {
+  background-color: hsl(0, 0%, 95%);
+  border-bottom-right-radius: var(--trigger-width);
+  border-left: none;
+  border-top-right-radius: var(--trigger-width);
+  border-width: 1px 3px;
+  border: 3px solid hsl(0, 0%, 80%);
+  box-sizing: border-box;
+  color: black;
+  display: block;
+  position: relative;
+  line-height: 0.9;
+  overflow: visible;
+  padding: 0.5em 0.5ch;
+  transition-delay: 0ms;
+  transition-duration: var(--speed);
+  transition-property: left;
+  transition-timing-function: ease-in;
+}
+:host .th-toc-no-heading::marker {
+  content: "";
+}
+:host:empty {
+  display: none;
+}
+:host::after {
   content: "menu_open";
   font-family: "Material Icons";
   position: absolute;
@@ -103,30 +109,30 @@
   color: white;
   z-index: -1;
 }
-#th-toc:hover::after {
+:host:hover::after {
   opacity: 1;
 }
-#th-toc ul {
+:host ul {
   margin: 0;
   padding: 0;
   padding-left: 2ch;
 }
-#th-toc > ul {
+:host > ul {
   padding-left: 0;
   overflow-y: auto;
   height: 100%;
 }
-#th-toc > ul ul {
+:host > ul ul {
   font-size: 0.9em;
   list-style-type: disc;
 }
-#th-toc > ul ul li::marker {
+:host > ul ul li::marker {
   content: "–";
 }
-#th-toc li {
+:host li {
   position: relative;
 }
-#th-toc li.th-toc-current::after {
+:host li.th-toc-current::after {
   content: "▸";
   font-size: 1rem;
   position: absolute;
@@ -134,27 +140,27 @@
   top: 0;
   line-height: 1;
 }
-#th-toc li > div {
+:host li > div {
   padding: 0.25em 0;
 }
-#th-toc li.th-toc-current > div,
-#th-toc li > div:hover {
+:host li.th-toc-current > div,
+:host li > div:hover {
   color: #ff0;
   background-color: hsl(60, 50%, 30%);
 }
-#th-toc a {
+:host a {
   color: inherit;
   text-decoration: none;
   display: block;
   padding: 0 0.5ch;
 }
-#th-toc .th-toc-level-1 > div {
+:host .th-toc-level-1 > div {
   font-weight: bold;
 }
-#th-toc .th-toc-level-1 li:not(:hover):not(.th-toc-current-within) > ul {
+:host .th-toc-level-1 li:not(:hover):not(.th-toc-current-within) > ul {
   display: none;
 }
-#th-toc .th-toc-current-within li > ul,
-#th-toc :hover li > ul {
+:host .th-toc-current-within li > ul,
+:host :hover li > ul {
   display: block !important;
 }

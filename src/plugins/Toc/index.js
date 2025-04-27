@@ -14,6 +14,7 @@ export default class Toc extends Plugin {
 		this.attachShadow({ mode: "open" });
 	}
 	connectedCallback() {
+		this.addStylesheet();
 		const domain = document.querySelector(this.domain);
 
 		if (!domain) {
@@ -291,4 +292,4 @@ class Utils {
 			.replace(/-+/g, '-');          // Replace multiple hyphens with a single hyphen
 	}
 }
-Toc.init();
+Toc.init(import.meta);
