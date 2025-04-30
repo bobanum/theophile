@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+	<meta charset="UTF-8" />
+	<link rel="shortcut icon" href="icon_template.svg" type="image/svg+xml" />
+	<link rel="stylesheet" href="./css/boilerplate.css" />
+	<title>Application Javascript</title>
+	<script>
+		console.log('Hello town!');
+	</script>
+	<style>
+		* {
+			outline: 5px solid red;
+		}
+	</style>
+</head>
+
+<body>
+	<template>
+		<link rel="stylesheet" href="./css/style.css" />
+		<div id="interface">
+			<header>
+				<h1>Application Javascript</h1>
+			</header>
+			<div class="body" id="app">
+				<h1>Lorem ipsum dolor sit.</h1>
+				<slot></slot>
+			</div>
+			<footer><span>&copy; Web 3 : Dynamique</span><strong>Application Javascript</strong></footer>
+		</div>
+
+	</template>
+</body>
+
+</html>
