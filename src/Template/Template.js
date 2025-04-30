@@ -4,16 +4,18 @@ export default class Template extends HTMLElement {
 		super();
 
 		this.attachShadow({ mode: 'open' });
+		this._href = null;
 	}
 	get href() {
-		return this.getAttribute("href");
+		return this._href;
 	}
 	set href(value) {
 		this.setAttribute("href", value);
 	}
 	attributeChangedCallback(name, oldValue, newValue) {
 		if (name === "href" && oldValue !== newValue) {
-			this.load(newValue).then(doc => {
+			this._href = new URL(newValue, location).href;
+			this.load(this._href).then(doc => {
 				const content = [...(doc.querySelector("template")?.content.childNodes || doc.querySelector("body").childNodes)];
 				content.forEach(element => {
 					this.shadowRoot.appendChild(element);
@@ -23,6 +25,16 @@ export default class Template extends HTMLElement {
 				});
 			});
 		}
+	}
+	rebaseURL(url, base = this._href) {
+		if (url.match(/[<>"`{}|\\^[\]' ()]/) || url.startsWith("javascript:") || url.startsWith("data:")) {
+			return url;
+		}
+		const result = new URL(url, base);
+		if (!result) {
+			return url;
+		}
+		return result.href;
 	}
 	excludeText(text, start, end) {
 		const startIndex = text.indexOf(start);
@@ -38,11 +50,38 @@ export default class Template extends HTMLElement {
 		let result = this.excludeText(html, start, end);
 		return result;
 	}
+	rebaseHtmlUrls(html) {	
+		const r = "(action|cite|content|data|formaction|href|imagesizes|imagesrcset|longdesc|poster|src|srcdoc|srcset|usemap)"+
+		"\\s*=\\s*"+
+		"([\"'])"+
+		"(.*?)"+
+		"\\2";
+		const regex = new RegExp(r, "g");
+		html = html.replace(regex, (dummy, attr, quot, val)=> {
+			return `${attr}=${quot}${this.rebaseURL(val)}${quot}`;
+		});
+		return html;
+	}
+	rebaseCssUrls(html) {	
+		const r = "url\\(([^\\)]*)\\)";
+		const regex = new RegExp(r, "g");
+		html = html.replace(regex, (x,y)=> {
+			console.log(x,y);
+			
+			return `url(${this.rebaseURL(y)})`;
+		});
+		return html;
+	}
+
 	load(templateUrl) {
 		return fetch(templateUrl)
 			.then(response => response.text())
 			.then(template => {
 				template = this.cleanup(template);
+				template = this.rebaseHtmlUrls(template);
+				template = this.rebaseCssUrls(template);
+				console.log(template);
+				
 				const parser = new DOMParser();
 				const doc = parser.parseFromString(template, 'text/html');
 				this.dispatchEvent(new CustomEvent("load", { detail: { template: doc } }));
