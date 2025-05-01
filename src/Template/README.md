@@ -1,23 +1,78 @@
-# Application de base (app-base)
+# Theophile template
 
-Application de base pour débuter un projet
+## Base template
 
-## Description
+```
+<!DOCTYPE html>
+<html lang="en">
 
-Utilisez cette application de base pour débuter un projet. Elle contient les éléments de base pour débuter un projet.
+<head>
+	<meta charset="UTF-8" />
+	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+	<!-- Will be applied to all the page -->
+	<link rel="stylesheet" href="./css/boilerplate.css" />
+	<title>Lorem Template</title>
+</head>
 
-## Installation et utilisation
+<body>
+	<template>
+		<!-- Will be applied to the template itself -->
+		<link rel="stylesheet" href="./css/style.css"/>
+		<div id="interface">
+			<header>
+				<slot name="header">
+					<h1>Default header</h1>
+				</slot>
+			</header>
+			<div class="body" id="app">
+				<slot></slot>
+			</div>
+			<footer><strong>Lorem Template</strong></footer>
+		</div>
 
-Il y a plusieurs façons d'installer et d'utiliser cette application de base.
+	</template>
+</body>
 
-1. Sauvegarder le dossier zippé à partir de [Github](https://github.com/js-cstj/app-base) (ou [cliquer ici](https://github.com/js-cstj/app-base/archive/refs/heads/master.zip)). Selon le projet, on peut avoir à choisir une branch spécifique avant de télécharger.
-2. Clonez le dépôt à partir de Github (voir [ici](https://github.com/js-cstj/app-base)). Faire `F1` dans _VSCode_ et taper `Git: Clone` et entrer l'adresse du dépôt.
-3. Utiliser le dépot comme modèle pour créer un nouveau dépôt. Cliquer sur le bouton `Use this template` sur Github. (Il faut avoir un compte Github pour cette méthode)
+</html>
+```
 
-## Préparation
+## The page
 
-1. Au besoin, renommer le dossier selon l'application à créer.
-2. **Important** Supprimer le contenu du `#app` dans le fichier `index.html`.
-3. Adapter le `header` et le `footer` du fichier `index.html` selon les besoins.
-4. Choisir un [thème de polices](css/polices/index.html) dans le fichier `style.scss`. (Au besoin, supprimer les thèmes non utilisés du dossier `css/polices`)
-5. Modifier la méthode `main()` du fichier `src/App.js` en fonction des besoins.
+````html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script type="module" src="./src/Template/Template.js"></script>
+	<title>Example Page</title>
+</head>
+<body>
+	<th-template href="template/template.html">
+		<h1 slot="header">The title</h1>
+		<p>Lorem ipsum dolor sit amet...</p>
+	</th-template>
+</body>
+</html>
+```
+### Alternative
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script type="module">
+		import Template from './src/Template/index.js';
+		Template.apply('body', 'template/template.html');
+	</script>
+	<title>Muspi Merol</title>
+
+</head>
+<body>
+	<h1 slot="header">The title</h1>
+	<p>Lorem ipsum dolor sit amet...</p>
+</body>
+</html>
+```
