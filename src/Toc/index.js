@@ -1,9 +1,24 @@
-export default class Toc extends HTMLElement {
-	static observedAttributes = [];
+import TheophileElement from "../TheophileElement.js";
+
+export default class Toc extends TheophileElement {
+	static get observedAttributes() {
+		return this.defineAttributes({
+			header: {
+				get: function() {return this._href},
+				set: function(value) {
+					if (value === this._href) return;
+					if (value === null) {
+						this.querySelector('[slot="header"]')?.remove();
+						return;
+					}
+					const header = this.querySelector('[slot="header"]')|| this.appendChild(this.DOM.header());
+					header.innerText = value;					
+				},
+			},
+		});
+	};
 	constructor() {
 		super();
-		this.attachShadow({ mode: 'open' });
-		this._href = null;
 	}
 
 	connectedCallback() {
@@ -18,8 +33,7 @@ export default class Toc extends HTMLElement {
 			heading.appendChild(toplink.cloneNode(true));
 		});
 		this.appendChild(list);
-	}
-	attributeChangedCallback(name, oldValue, newValue) {
+		this.appendChild(this.DOM.style());
 	}
 	findId(txt) {
 		const id = this.text2slug(txt);
@@ -81,6 +95,12 @@ export default class Toc extends HTMLElement {
 			slotList.name = "list";
 			return result;
 		},
+		header: (text) => {
+			const result = document.createElement("header");
+			result.innerText = "Table of Contents";
+			result.slot = "header";
+			return result;
+		},
 		ul: (group, level = 1) => {
 			const result = document.createElement("ul");
 			group.forEach(headingObject => {
@@ -108,7 +128,6 @@ export default class Toc extends HTMLElement {
 			url.hash = heading.id;
 			permalink.href = url.href;
 			permalink.classList.add("th-toc-permalink");
-			permalink.innerHTML = "&#x1f517;";
 			return permalink;
 		},
 		toplink: () => {
@@ -118,10 +137,37 @@ export default class Toc extends HTMLElement {
 			url.hash = "";
 			url.search = "";
 			result.href = url.href;			
-			result.innerHTML = "&#x21b8;";
 			return result;
 		},
-
+		style: () => {
+			const style = document.createElement("style");
+			style.textContent = `
+				:hover {
+					>.th-toc-toplink, >.th-toc-permalink {
+						opacity: .3;
+						&:hover {
+							opacity: 1;
+						}
+					}
+				}
+				.th-toc-permalink, .th-toc-toplink {
+					font-size: 0.8em;
+					opacity: 0;
+					transition: opacity 0.2s ease-in-out;
+				}
+				.th-toc-permalink {
+					&::before {
+						content: "🔗︎";
+					}
+				}
+				.th-toc-toplink {
+					&::before {
+						content: "🔝︎";
+					}
+				}
+			`;
+			return style;
+		}
 	};
 }
 customElements.define('th-toc', Toc);

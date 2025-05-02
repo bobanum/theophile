@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+	<meta charset="UTF-8" />
+	<link rel="icon" href="img/favicon.svg" type="image/svg+xml" />
+	<link rel="stylesheet" href="./css/boilerplate.css" />
+	<title>Theophile Example</title>
+	
+</head>
+
+<body>
+	<template>
+		<link rel="stylesheet" action="alert(123)" href="./css/style.css" />
+		<div id="interface">
+			<th-toc header="Table des matières"></th-toc>
+			<header>
+				<slot name="header">
+					<h1>Theophile Example</h1>
+					<img src="img/favicon.svg" alt="" style="height: 2.5em; filter: brightness(0) invert();">
+				</slot>
+			</header>
+			<div class="body" id="app">
+				<slot></slot>
+			</div>
+			<footer><span>Theophile</span><strong>Theophile Example</strong></footer>
+		</div>
+
+	</template>
+</body>
+
+</html>
