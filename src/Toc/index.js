@@ -4,15 +4,15 @@ export default class Toc extends TheophileElement {
 	static get observedAttributes() {
 		return this.defineAttributes({
 			header: {
-				get: function() {return this._href},
-				set: function(value) {
+				get: function () { return this._href; },
+				set: function (value) {
 					if (value === this._href) return;
 					if (value === null) {
 						this.querySelector('[slot="header"]')?.remove();
 						return;
 					}
-					const header = this.querySelector('[slot="header"]')|| this.appendChild(this.DOM.header());
-					header.innerText = value;					
+					const header = this.querySelector('[slot="header"]') || this.appendChild(this.DOM.header());
+					header.innerText = value;
 				},
 			},
 		});
@@ -22,18 +22,19 @@ export default class Toc extends TheophileElement {
 	}
 
 	connectedCallback() {
-		this.shadowRoot.appendChild(this.DOM.main());
 		this._headings = Array.from(document.body.querySelectorAll('h1,h2,h3'));
 		const hierarchy = this.getHierarchy(this._headings);
-		const list = this.DOM.ul(hierarchy);
-		list.slot = "list";
+		this.shadowRoot.appendChild(this.DOM.main(hierarchy));
+		this.shadowRoot.appendChild(this.DOM.pin());
 		const toplink = this.DOM.toplink();
 		this._headings.forEach(heading => {
 			heading.appendChild(this.DOM.permalink(heading));
 			heading.appendChild(toplink.cloneNode(true));
 		});
-		this.appendChild(list);
-		this.appendChild(this.DOM.style());
+		// this.appendChild(this.DOM.style());
+		// this.appendChild(this.DOM.link("styleout.css"));
+		document.head.appendChild(this.DOM.link("styleout.css"));
+		this.shadowRoot.appendChild(this.DOM.link());
 	}
 	findId(txt) {
 		const id = this.text2slug(txt);
@@ -86,13 +87,13 @@ export default class Toc extends TheophileElement {
 		return slug;
 	}
 	DOM = {
-		main: () => {
+		main: (hierarchy) => {
 			const result = document.createElement("nav");
 			result.classList.add("th-toc");
 			const slotHeader = result.appendChild(document.createElement("slot"));
 			slotHeader.name = "header";
-			const slotList = result.appendChild(document.createElement("slot"));
-			slotList.name = "list";
+			
+			result.appendChild(this.DOM.ul(hierarchy));
 			return result;
 		},
 		header: (text) => {
@@ -136,12 +137,21 @@ export default class Toc extends TheophileElement {
 			const url = new URL(location);
 			url.hash = "";
 			url.search = "";
-			result.href = url.href;			
+			result.href = url.href;
 			return result;
+		},
+		link: (url = "style.css") => {
+			const link = document.createElement("link");
+			link.rel = "stylesheet";
+
+			link.href = new URL(url, import.meta.url).href;
+			return link;
 		},
 		style: () => {
 			const style = document.createElement("style");
 			style.textContent = `
+				.th-toc-pinned {
+		}
 				:hover {
 					>.th-toc-toplink, >.th-toc-permalink {
 						opacity: .3;
@@ -167,7 +177,17 @@ export default class Toc extends TheophileElement {
 				}
 			`;
 			return style;
-		}
+		},
+		pin: () => {
+			const pin = document.createElement("div");
+			pin.classList.add("pin");
+			pin.addEventListener("click", (e) => {
+				e.stopPropagation();
+				
+				document.documentElement.classList.toggle("th-toc-pinned");
+			});
+			return pin;
+		},
 	};
 }
 customElements.define('th-toc', Toc);

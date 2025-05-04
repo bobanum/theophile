@@ -8,8 +8,8 @@ export default class Template extends TheophileElement {
 	static get observedAttributes() {
 		return this.defineAttributes({
 			href: {
-				get: function() {return this._href},
-				set: function(value) {
+				get: function () { return this._href; },
+				set: function (value) {
 					if (value === this._href) {
 						return;
 					}
@@ -28,7 +28,7 @@ export default class Template extends TheophileElement {
 			},
 		});
 	};
-	static apply(selector, templateUrl) {
+	static apply(templateUrl, selector = "body") {
 		return new Promise((resolve, reject) => {
 			const element = document.querySelector(selector);
 			const template = document.createElement('th-template');

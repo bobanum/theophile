@@ -65,7 +65,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script type="module">
 		import Template from './src/Template/index.js';
-		Template.apply('body', 'template/template.html');
+		Template.apply('template/template.html', 'body');
 	</script>
 	<title>Muspi Merol</title>
 

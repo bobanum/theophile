@@ -1,0 +1,81 @@
+:root {
+    --th-toc-width: 300px;
+}
+body {
+    background-color: aliceblue;
+}
+header {
+    outline: 10px solid yellow;
+    display: block
+}
+.th-toc-pinned {
+    body {
+        margin-left: var(--th-toc-width);
+        /* display: grid;
+        grid-template-columns: auto 1fr;
+        height: auto;
+        gap: 1em; */
+    }
+
+    th-toc {
+        display: block;
+        position: sticky;
+        order: -1;
+        align-self: flex-start;
+        left: auto !important;
+
+        .th-toc-btn-pin {
+            opacity: 1;
+            color: #ff0;
+            text-shadow: none;
+
+            &::before {
+                margin-left: 1px;
+                margin-top: 1px;
+            }
+        }
+
+        &::after {
+            display: none;
+        }
+
+        >ul {
+            overflow: visible;
+        }
+
+        ul {
+            display: block !important;
+        }
+    }
+}
+
+:hover {
+
+    >.th-toc-toplink,
+    >.th-toc-permalink {
+        opacity: .3;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+}
+
+.th-toc-permalink,
+.th-toc-toplink {
+    font-size: 0.8em;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.th-toc-permalink {
+    &::before {
+        content: "🔗︎";
+    }
+}
+
+.th-toc-toplink {
+    &::before {
+        content: "🔝︎";
+    }
+}

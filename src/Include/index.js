@@ -15,6 +15,11 @@ export default class Include extends TheophileElement {
 						while (this.firstChild) {
 							this.firstChild.remove();
 						}
+
+						if (!doc.querySelector("body>h1,body>header")) {
+							this.appendChild(this.DOM.title(doc.title));
+						}
+
 						while (doc.activeElement.firstChild) {
 							this.appendChild(doc.activeElement.firstChild);
 						}
@@ -22,38 +27,29 @@ export default class Include extends TheophileElement {
 				},
 			},
 		});
-		// 	const properties = this.defineAttributes({});
-		// 	properties = {
-		// 		href: {
-		// 			type: String,
-		// 			reflect: true,
-		// 			attribute: "href",
-		// 			observer: "hrefChanged"
-		// 		}
-		// 	};
-		// 	return Object.keys(properties).filter(key => properties[key].reflect);
 	};
 	constructor() {
 		super();
 	}
 
 	connectedCallback() {
-		console.log("connectedCallback", this._href);
-
 		this.shadowRoot.appendChild(document.createElement("slot"));
 		return;
-		this.shadowRoot.appendChild(this.DOM.main());
-		this._headings = Array.from(document.body.querySelectorAll('h1,h2,h3'));
-		const hierarchy = this.getHierarchy(this._headings);
-		const list = this.DOM.ul(hierarchy);
-		list.slot = "list";
-		const toplink = this.DOM.toplink();
-		this._headings.forEach(heading => {
-			heading.appendChild(this.DOM.permalink(heading));
-			heading.appendChild(toplink.cloneNode(true));
-		});
-		this.appendChild(list);
 	}
-	DOM = {};
+	DOM = {
+		title: (text) => {
+			const result = document.createElement("h1");
+			result.textContent = text;
+			return result;
+		},
+		permalink: () => {
+			const result = document.createElement("a");
+			result.classList.add("th-permalink");
+			console.log(this._href);
+			
+			result.href = this._href;
+			return result;
+		},
+	};
 }
 customElements.define('th-include', Include);
