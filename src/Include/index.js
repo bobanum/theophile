@@ -1,5 +1,6 @@
 import TheophileElement from "../TheophileElement.js";
 export default class Include extends TheophileElement {
+	static tasks = new Map();
 	static get observedAttributes() {
 		return this.defineAttributes({
 			href: {
@@ -23,6 +24,8 @@ export default class Include extends TheophileElement {
 						while (doc.activeElement.firstChild) {
 							this.appendChild(doc.activeElement.firstChild);
 						}
+						this.dispatchEvent(new CustomEvent("ready", { detail: { template: doc } }));
+						Include.tasks.set(this._href, this);
 					});
 				},
 			},
@@ -45,8 +48,7 @@ export default class Include extends TheophileElement {
 		permalink: () => {
 			const result = document.createElement("a");
 			result.classList.add("th-permalink");
-			console.log(this._href);
-			
+
 			result.href = this._href;
 			return result;
 		},

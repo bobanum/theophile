@@ -1,13 +1,6 @@
 :root {
     --th-toc-width: 300px;
 }
-body {
-    background-color: aliceblue;
-}
-header {
-    outline: 10px solid yellow;
-    display: block
-}
 .th-toc-pinned {
     body {
         margin-left: var(--th-toc-width);

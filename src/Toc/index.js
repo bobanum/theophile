@@ -22,6 +22,8 @@ export default class Toc extends TheophileElement {
 	}
 
 	connectedCallback() {
+		console.log("connectedCallback", this._href);
+		
 		this._headings = Array.from(document.body.querySelectorAll('h1,h2,h3'));
 		const hierarchy = this.getHierarchy(this._headings);
 		this.shadowRoot.appendChild(this.DOM.main(hierarchy));
@@ -31,9 +33,6 @@ export default class Toc extends TheophileElement {
 			heading.appendChild(this.DOM.permalink(heading));
 			heading.appendChild(toplink.cloneNode(true));
 		});
-		// this.appendChild(this.DOM.style());
-		// this.appendChild(this.DOM.link("styleout.css"));
-		document.head.appendChild(this.DOM.link("styleout.css"));
 		this.shadowRoot.appendChild(this.DOM.link());
 	}
 	findId(txt) {
@@ -147,37 +146,6 @@ export default class Toc extends TheophileElement {
 			link.href = new URL(url, import.meta.url).href;
 			return link;
 		},
-		style: () => {
-			const style = document.createElement("style");
-			style.textContent = `
-				.th-toc-pinned {
-		}
-				:hover {
-					>.th-toc-toplink, >.th-toc-permalink {
-						opacity: .3;
-						&:hover {
-							opacity: 1;
-						}
-					}
-				}
-				.th-toc-permalink, .th-toc-toplink {
-					font-size: 0.8em;
-					opacity: 0;
-					transition: opacity 0.2s ease-in-out;
-				}
-				.th-toc-permalink {
-					&::before {
-						content: "🔗︎";
-					}
-				}
-				.th-toc-toplink {
-					&::before {
-						content: "🔝︎";
-					}
-				}
-			`;
-			return style;
-		},
 		pin: () => {
 			const pin = document.createElement("div");
 			pin.classList.add("pin");
@@ -189,5 +157,21 @@ export default class Toc extends TheophileElement {
 			return pin;
 		},
 	};
+	static DOM = {
+		link: (url = "style.css") => {
+			if (document.getElementById("th-toc-style")) {
+				return document.createDocumentFragment();
+			}
+			const link = document.createElement("link");
+			link.rel = "stylesheet";
+			link.href = new URL(url, import.meta.url).href;
+			link.id = "th-toc-style";
+			return link;
+		},
+	};
+	static init() {
+		document.head.appendChild(this.DOM.link("styleout.css"));
+	}
 }
+Toc.init();
 customElements.define('th-toc', Toc);
