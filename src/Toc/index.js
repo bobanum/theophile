@@ -22,14 +22,13 @@ export default class Toc extends TheophileElement {
 	}
 
 	connectedCallback() {
-		console.log("connectedCallback", this._href);
-		
-		this._headings = Array.from(document.body.querySelectorAll('h1,h2,h3'));
-		const hierarchy = this.getHierarchy(this._headings);
+	
+		const headings = Array.from(document.body.querySelectorAll('h1,h2,h3'));
+		const hierarchy = this.getHierarchy(headings);
 		this.shadowRoot.appendChild(this.DOM.main(hierarchy));
 		this.shadowRoot.appendChild(this.DOM.pin());
 		const toplink = this.DOM.toplink();
-		this._headings.forEach(heading => {
+		headings.forEach(heading => {
 			heading.appendChild(this.DOM.permalink(heading));
 			heading.appendChild(toplink.cloneNode(true));
 		});

@@ -1,4 +1,6 @@
+import TaskList from "./TaskList.js";
 export default class TheophileElement extends HTMLElement {
+	static _tasks = new TaskList();
 	static defineAttributes(properties) {
 		Object.defineProperties(this.prototype, properties);
 		return Object.keys(properties);
@@ -74,5 +76,12 @@ export default class TheophileElement extends HTMLElement {
 		} catch (error) {
 			return console.error('Error loading file:', error);
 		}
+	}
+	static addTask(task) {
+		this._tasks.add(task);
+		return this;
+	}
+	static ready() {
+		return this._tasks.complete();
 	}
 }

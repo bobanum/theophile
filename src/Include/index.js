@@ -1,6 +1,6 @@
 import TheophileElement from "../TheophileElement.js";
+import TaskList from "../TaskList.js";
 export default class Include extends TheophileElement {
-	static tasks = new Map();
 	static get observedAttributes() {
 		return this.defineAttributes({
 			href: {
@@ -12,6 +12,7 @@ export default class Include extends TheophileElement {
 					this._href = new URL(value, location).href;
 					this.setAttribute("href", this._href);
 
+					Include.addTask(this);
 					this.load(this._href).then(doc => {
 						while (this.firstChild) {
 							this.firstChild.remove();
@@ -24,8 +25,8 @@ export default class Include extends TheophileElement {
 						while (doc.activeElement.firstChild) {
 							this.appendChild(doc.activeElement.firstChild);
 						}
+						
 						this.dispatchEvent(new CustomEvent("ready", { detail: { template: doc } }));
-						Include.tasks.set(this._href, this);
 					});
 				},
 			},
