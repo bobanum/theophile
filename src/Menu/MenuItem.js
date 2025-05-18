@@ -2,20 +2,36 @@ import TheophileElement from "../TheophileElement.js";
 import Menu from "./Menu.js";
 
 export default class MenuItem extends TheophileElement {
+	static get observedAttributes() {
+		return this.defineAttributes({
+			href: true,
+			label: true,
+			icon: true,
+			children: true,
+			disabled: true,
+			tab: true,
+		});
+	};
 	connectedCallback() {
-		// this.shadowRoot.innerHTML = `<style>
-		// ::slotted(a) {
-		// background:yellow;
-		// 	display: grid;
-		// 	grid-template-columns: 1fr 1fr 1fr;
-		// }
-		// </style>`;
 		this.shadowRoot.appendChild(this.DOM.main());
 		this.appendChild(this.DOM.label());
 		TheophileElement.wrap(this.querySelectorAll(":scope>th-menu-item"), 'th-menu');
 		this.querySelectorAll(":scope>th-menu").forEach((child) => {
 			child.slot = "menu";
 		});
+	}
+	get_href() {
+		return this.getAttribute("href");
+	}
+	set_href(value) {
+		this.setAttribute("href", value);
+	}
+	get_children() {
+		return this.querySelectorAll(":scope>th-menu-item");
+	}
+	set_children(value) {		
+		const children = Menu.parse(value);
+		this.appendChild(children);
 	}
 	DOM = {
 		main: () => {
@@ -83,32 +99,24 @@ export default class MenuItem extends TheophileElement {
 		},
 	};
 	static parse(json) {
-		const result = document.createElement(this.tagName);
-		result.parse(json);
-		return result;
+		return document.createElement(this.tagName).parse(json);
 	}
-	parse(json) {
-		["label", "href", "icon", "disabled", "tab"].forEach((key) => {
-			if (json[key]) {
-				this.setAttribute(key, json[key]);
-			}
-		});
-
-		if (json.children) {
-			const children = Menu.parse(json.children);
-			this.appendChild(children);
+	parse(obj) {
+		for (const [key, value] of Object.entries(obj)) {
+			this[key] = value;
 		}
+		// ["label", "href", "icon", "disabled", "tab"].forEach((key) => {
+		// 	if (json[key]) {
+		// 		this.setAttribute(key, json[key]);
+		// 	}
+		// });
+
+		// if (json.children) {
+		// 	const children = Menu.parse(json.children);
+		// 	this.appendChild(children);
+		// }
 		return this;
 	}
-	static parseChildren(children) {
-		const result = document.createDocumentFragment();
-		for (const [key, value] of Object.entries(children)) {
-			const child = this.parse(key, value);
-			result.appendChild(child);
-		}
-		return result;
-	}
-
 }
 MenuItem.init(import.meta);
 

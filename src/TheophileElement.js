@@ -122,8 +122,53 @@ export default class TheophileElement extends HTMLElement {
 	 * @returns {string[]} An array of the property names that were defined.
 	 */
 	static defineAttributes(properties) {
-		Object.defineProperties(this.prototype, properties);
+		const defaults = {
+			get: function () {
+				console.log("get", this.name);
+
+				return;
+			},
+			set: function (value) {
+				console.log("set", this, value);
+
+				if (value === null) {
+					this.removeAttribute(this.name);
+				} else {
+					this.setAttribute(this.name, value);
+				}
+			}
+		};
+		for (const [key, value] of Object.entries(properties)) {
+			if (value === true) {
+				
+				Object.defineProperty(this.prototype, key, {
+
+					get: function () {
+						return this[`get_${key}`]?.() || this[`_${key}`] || this.getAttribute(key);
+					},
+					set: function (value) {
+						if (this[`set_${key}`]) return this[`set_${key}`](value);
+						
+						if (this[`_${key}`] === value) return;
+						this[`_${key}`] = value;
+						this.setAttribute(key, value);
+					},
+					enumerable: true,
+					configurable: true,
+				});
+				continue;
+			}
+			Object.defineProperty(this.prototype, key, value);
+			// if (value.get) {
+			// 	this.prototype[key] = value.get.call(this.prototype);
+			// }
+			// if (value.set) {
+			// 	this.prototype[key] = value.set.call(this.prototype);
+			// }
+		}
+		// Object.defineProperties(this.prototype, properties);
 		return Object.keys(properties);
+		// return this;
 	}
 	/**
 	 * Resolves a given URL relative to a base URL, returning the absolute URL.
@@ -294,7 +339,7 @@ export default class TheophileElement extends HTMLElement {
 	 *   @returns {HTMLSlotElement} The created <slot> element.
 	 */
 	static DOM = {
-		link: function(url) {			
+		link: function (url) {
 			url = url || this.tagName + ".css";
 			let id = this.tagName + "-style";
 			if (document.getElementById(id)) {
@@ -306,7 +351,7 @@ export default class TheophileElement extends HTMLElement {
 			link.id = id;
 			return link;
 		},
-		slot: function(name, content) {
+		slot: function (name, content) {
 			const slot = document.createElement("slot");
 			if (name) {
 				slot.name = name;
@@ -336,9 +381,9 @@ export default class TheophileElement extends HTMLElement {
 	 */
 	static init(meta, tagName) {
 		this.meta = meta;
-		
+
 		this.tagName = tagName || `${this.prefix}${this.name.replace(/([A-Z])/g, "-$1").toLowerCase()}`;
-		
+
 		customElements.define(this.tagName, this);
 		return this;
 	}
