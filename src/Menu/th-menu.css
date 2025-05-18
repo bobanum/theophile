@@ -1,0 +1,17 @@
+th-menu {
+	z-index: 1000;
+
+	th-menu-item {
+		>th-menu {
+			flex-direction: column;
+			position: absolute;
+			top: 100%;
+			margin-top: -2px;
+		}
+	}
+
+	a {
+		text-decoration: none;
+		color: inherit;
+	}
+}

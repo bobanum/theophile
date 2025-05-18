@@ -156,21 +156,5 @@ export default class Toc extends TheophileElement {
 			return pin;
 		},
 	};
-	static DOM = {
-		link: (url = "style.css") => {
-			if (document.getElementById("th-toc-style")) {
-				return document.createDocumentFragment();
-			}
-			const link = document.createElement("link");
-			link.rel = "stylesheet";
-			link.href = new URL(url, import.meta.url).href;
-			link.id = "th-toc-style";
-			return link;
-		},
-	};
-	static init() {
-		document.head.appendChild(this.DOM.link("styleout.css"));
-	}
 }
-Toc.init();
-customElements.define('th-toc', Toc);
+Toc.init(import.meta).addStyle();

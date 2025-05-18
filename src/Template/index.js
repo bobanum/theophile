@@ -1,11 +1,6 @@
-import TaskList from "../TaskList.js";
 import TheophileElement from "../TheophileElement.js";
 
 export default class Template extends TheophileElement {
-	constructor() {
-		super();
-	}
-
 	static get observedAttributes() {
 		return this.defineAttributes({
 			href: {
@@ -47,5 +42,4 @@ export default class Template extends TheophileElement {
 		});
 	}
 }
-Template.location = new URL(import.meta.url);
-customElements.define('th-template', Template);
+Template.init(import.meta);

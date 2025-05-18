@@ -1,0 +1,32 @@
+@import url("https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700|Montserrat:400,400i,600,600i,800,800i|Fira+Code:wght@400;700&display=swap");
+
+:root {
+	--font-textes: "Montserrat", sans-serif;
+	--font-titres: "Libre Baskerville", serif;
+	--font-code: 'Fira Code', monospace;
+	;
+	--h: 212;
+	--hh: 21;
+	--s: 14%;
+	--ss: 87%;
+	--ll: 15%;
+	--l: 19%;
+	--ld: 31%;
+	--dl: 33%;
+	--d: 71%;
+	--dd: 81%;
+	--largeur-interface: 60rem;
+	font-family: var(--font-textes);
+}
+
+@media screen and (prefers-color-scheme: dark) {
+	:root {
+		--dd: 15%;
+		--d: 19%;
+		--dl: 31%;
+		--ld: 33%;
+		--l: 71%;
+		--ll: 81%;
+	}
+
+}

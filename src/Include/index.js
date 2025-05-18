@@ -55,4 +55,4 @@ export default class Include extends TheophileElement {
 		},
 	};
 }
-customElements.define('th-include', Include);
+Include.init(import.meta);
