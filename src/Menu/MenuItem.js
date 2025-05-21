@@ -13,6 +13,7 @@ export default class MenuItem extends TheophileElement {
 		});
 	};
 	connectedCallback() {
+		this.setAttribute("role", "menuitem");
 		this.shadowRoot.appendChild(this.DOM.main());
 		this.appendChild(this.DOM.label());
 		TheophileElement.wrap(this.querySelectorAll(":scope>th-menu-item"), 'th-menu');
@@ -36,6 +37,7 @@ export default class MenuItem extends TheophileElement {
 	DOM = {
 		main: () => {
 			const result = document.createDocumentFragment();
+			result.appendChild(this.DOM.style());
 			result.appendChild(TheophileElement.DOM.slot("label"));
 			result.appendChild(TheophileElement.DOM.slot("menu"));
 			return result;
@@ -97,6 +99,11 @@ export default class MenuItem extends TheophileElement {
 			link.href = new URL(url, location.href).href;
 			return link;
 		},
+		style: (css = '') => {
+			const style = document.createElement("style");
+			style.textContent = `::slotted(th-menu) {z-index: 1000;}` + css;
+			return style;
+		},
 	};
 	static parse(json) {
 		return document.createElement(this.tagName).parse(json);
@@ -117,6 +124,21 @@ export default class MenuItem extends TheophileElement {
 		// }
 		return this;
 	}
+	parseTxt(line) {
+		line = line.trim().split("|");
+		["label", "href", "icon"].forEach((attr, i) => {
+			if (line[i]) {
+				this[attr] = line[i];
+			}
+		});
+		
+		return this;
+	}
+	static parseTxt(line) {
+		if (line.trim().length === 0) return document.createDocumentFragment();
+		return document.createElement(this.tagName).parseTxt(line);
+	}
+
 }
 MenuItem.init(import.meta);
 

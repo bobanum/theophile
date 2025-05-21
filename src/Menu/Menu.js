@@ -7,23 +7,74 @@ export default class Menu extends TheophileElement {
 			this.manageSrc(this.getAttribute("src"));
 		}
 	}
-	manageSrc(src) {
-		if (this.hasAttribute("src")) {
-			let src = new URL(this.getAttribute("src"), location.href);
-			if (src.href.endsWith(".js")) {
-				import(src.href)
-					.then((module) => {
-						// console.log("Module loaded:", module);
-						this.parse(module.default);
-					})
-					.catch((error) => {
-						console.error("Error loading module:", error);
-					});
+	manageSrc() {
+		if (!this.hasAttribute("src")) return;
+		let src = new URL(this.getAttribute("src"), location.href);
+		if (src.href.endsWith(".js")) {
+			this.fetchJs(src);
+		} else if (src.href.endsWith(".json")) {
+			this.fetchJson(src);
+		} else if (src.href.endsWith(".html")) {
+			this.fetchHTML(src);
+		} else if (src.href.endsWith(".txt")) {
+			this.fetchTxt(src);
+		} else {
+			console.error("Unsupported file type:", src.href);
+		}
+
+	}
+	async fetchJs(src) {
+		try {
+			const module = await import(src.href);
+			this.parse(module.default);
+		} catch (error) {
+			console.error("Error loading module:", error);
+		}
+	}
+	async fetchJson(src) {
+		try {
+			const response = await fetch(src.href);
+			if (!response.ok) {
+				throw new Error("Network response was not ok");
 			}
+			const data = await response.json();
+			this.parse(data);
+		} catch (error) {
+			console.error("Error fetching JSON:", error);
+		}
+	}
+	async fetchHTML(src) {
+		try {
+			const response = await fetch(src.href);
+			if (!response.ok) {
+				throw new Error("Network response was not ok");
+			}
+			const data = await response.text();
+			const parser = new DOMParser();
+			const doc = parser.parseFromString(data, "text/html");
+			const items = doc.body.firstChild.children;
+			console.log(doc.body.firstChild.children);
+			[...items].forEach((item) => {
+				this.appendChild(item);
+			});
+		} catch (error) {
+			console.error("Error fetching HTML:", error);
+		}
+	}
+	async fetchTxt(src) {
+		try {
+			const response = await fetch(src.href);
+			if (!response.ok) {
+				throw new Error("Network response was not ok");
+			}
+			const txt = await response.text();
+			const lines = txt.split(/\r\n|\n\r|\r|\n/);
+			this.parseTxt(lines);
+		} catch (error) {
+			console.error("Error fetching TXT:", error);
 		}
 	}
 	connectedCallback() {
-		// this.appendChild(this.DOM.label());
 		this.shadowRoot.appendChild(this.DOM.main());
 	}
 	DOM = {
@@ -46,17 +97,28 @@ export default class Menu extends TheophileElement {
 		});
 		return this;
 	}
-	parse0(json) {
-		for (const [key, value] of Object.entries(json)) {
-			console.log(key, value);
+	static parse(json) {
+		return document.createElement(this.tagName).parse(json);
+	}
+	parseTxt(linesArray, indent = 0) {
+		let item = null;
+		while (linesArray.length > 0) {
+			let lineIndent = linesArray[0].length - linesArray[0].trimStart().length;
+			if (lineIndent < indent) return this;
 			
-			const child = MenuItem.parse(value);
-			this.appendChild(child);
+			if (lineIndent > indent) {
+				let submenu = Menu.parseTxt(linesArray, lineIndent);
+				submenu.slot = "menu";
+				item.appendChild(submenu);
+			} else {
+				item = MenuItem.parseTxt(linesArray.shift());
+				this.appendChild(item);
+			}
 		}
 		return this;
 	}
-	static parse(json) {
-		return document.createElement(this.tagName).parse(json);
+	static parseTxt(linesArray, indent = 0) {
+		return document.createElement(this.tagName).parseTxt(linesArray, indent);
 	}
 }
 Menu.init(import.meta).addStyle();

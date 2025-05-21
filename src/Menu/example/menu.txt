@@ -1,0 +1,11 @@
+Home|index.html|home
+Courses||book
+	Course 1|courses/01.html
+	Course 2||folder
+		Lesson 1|courses/02/lesson1.html
+		Lesson 2|courses/02/lesson2.html
+Contact|contact.html|person
+About|about.html|info
+Blog||edit
+	Latest Posts|blog/latest.html
+	Archive|blog/archive.html

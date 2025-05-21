@@ -1,5 +1,4 @@
-// menu.js (dummy example)
-const menu = [
+[
 	{
 		"label": "Home",
 		"href": "index.html",
@@ -54,8 +53,4 @@ const menu = [
 			}
 		]
 	}
-];
-// Possible data manipulation here.
-// For example, you can add a new item to the menu
-
-export default menu;
+]

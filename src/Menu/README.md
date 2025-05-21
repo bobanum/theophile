@@ -8,7 +8,8 @@ The `<th-menu>` element is used to create a menu. It can contain multiple `<th-m
 ### Attributes
 | Attribute      | Type     | Default      | Description                                                                                                                                                         | Example                              |
 | -------------- | -------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| `src`⌚︎         | `string` | `undefined`  | The URL of the menu. This can be used to load the menu from an external source. If the `src` attribute is provided, the menu will be loaded from the specified URL. | `src="menu.js"`<br>`src="menu.json"` |
+| `src`⌚︎         | `string` | `undefined`  | The URL of the menu. Supported formats : `.js`, `.json`, `.html`, `.xml`, `.txt`.
+| `src="menu.js"`<br>`src="menu.json"` |
 | `style`⌚︎       | `string` | `undefined`  | The CSS style to apply to the menu. This can be used to customize the appearance of the menu.                                                                       | `style="color: red;"`                |
 | `orientation`⌚︎ | `string` | `horizontal` | The orientation of the menu. It can be either `horizontal` or `vertical`.                                                                                           | `orientation="vertical"`             |
 
@@ -110,10 +111,25 @@ export default menu;
 ]
 ```
 
+## TXT Example
+```txt
+Home|index.html|home
+Courses||book
+	Course 1|courses/01.html
+	Course 2||folder
+		Lesson 1|courses/02/lesson1.html
+		Lesson 2|courses/02/lesson2.html
+Contact|contact.html|person
+About|about.html|info
+Blog||edit
+	Latest Posts|blog/latest.html
+	Archive|blog/archive.html
+```
+
 ## TODO
-- `src` attribute: load the menu from a JSON file or a JavaScript file.
 - Use `focus-within` to manage focus on the menu items.
 - Manage the 'hamburger' menu for mobile devices.
+- Add groups and separators.
 
 ## To document
 - Properties
