@@ -62,9 +62,20 @@ export default class Template extends Plugin {
 		this.template.querySelectorAll("link,style,script").forEach(element => {
 			let url = element.getAttribute("href") || element.getAttribute("src");
 			let external = Theophile.getExternal(url, element);
+			if (element.tagName === "SCRIPT") {
+				external = this.cloneScript(external);
+			}
 			document.head.insertBefore(external, document.head.firstChild);
 		});
 		return Promise.all(promises);
+	}
+	static cloneScript(script) {
+		const newScript = document.createElement("script");
+		[...script.attributes].forEach(attr => {
+			newScript.setAttribute(attr.name, attr.value);
+		});
+		newScript.textContent = script.textContent;
+		return newScript;
 	}
 	static moveContainers(selector) {
 		const containers = this.template.querySelectorAll(selector);
@@ -86,7 +97,6 @@ export default class Template extends Plugin {
 			// PATCH: Remove live-server script and comments
 			if (child.nodeType === Node.COMMENT_NODE && child.textContent.indexOf("live-server") >= 0) {
 				while (child.nextSibling?.nodeType === Node.TEXT_NODE) {
-					console.log(child.nextSibling);
 					child.parentNode.removeChild(child.nextSibling);
 				}
 				if (child.nextSibling?.tagName === "SCRIPT") {

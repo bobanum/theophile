@@ -56,7 +56,7 @@ export default class Theophile {
 		return (this._root = result);
 	}
 	static getExternal(url, defaultValue = false) {
-		if (!url) return false;
+		if (!url) return defaultValue;
 		if (this.externals[url]) return this.externals[url];
 		url = this.siteURL(url);
 		if (this.externals[url]) return this.externals[url];
@@ -292,7 +292,6 @@ export default class Theophile {
 		});
 	}
 	static loadLink(url) {
-		console.log(`Loading link ${url}`);
 		if (this.externals[url]) {
 			return this.externals[url];
 		}
