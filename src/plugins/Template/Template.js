@@ -1,4 +1,7 @@
+import "../../Theophile.js";
+import Theophile from "../../Theophile.js";
 import Plugin from "../Plugin.js";
+
 export default class Template extends Plugin {
 	static async init(Theophile) {
 		await super.init(Theophile);
@@ -43,6 +46,11 @@ export default class Template extends Plugin {
 	}
 	static async mount() {
 		await super.mount();
+		const externalElements = document.head.querySelectorAll("[href],[src]");
+		externalElements.forEach(element => {
+			let url = element.getAttribute("href") || element.getAttribute("src");
+			Theophile.addExternal(url, element);
+		});
 		var promises = Array.from(this.template.querySelectorAll("link"), link => {
 			return new Promise(resolve => {
 				link.addEventListener("load", e => {
@@ -50,7 +58,16 @@ export default class Template extends Plugin {
 				});
 			});
 		});
-		const containers = this.template.querySelectorAll(".container");
+		this.moveContainers(".container");
+		this.template.querySelectorAll("link,style,script").forEach(element => {
+			let url = element.getAttribute("href") || element.getAttribute("src");
+			let external = Theophile.getExternal(url, element);
+			document.head.insertBefore(external, document.head.firstChild);
+		});
+		return Promise.all(promises);
+	}
+	static moveContainers(selector) {
+		const containers = this.template.querySelectorAll(selector);
 		containers.forEach(container => {
 			var selector = container.getAttribute("data-selector");
 			var contents = document.querySelector(selector);
@@ -58,30 +75,30 @@ export default class Template extends Plugin {
 			while (container.firstChild) {
 				container.firstChild.remove();
 			}
-			while (contents.firstChild) {
-				// TOFIX: To remove scripts added by VSCode's Live Server, but removes all contents's script
-				if (contents.firstChild.tagName === "SCRIPT") {
-					contents.firstChild.remove();
-				} else {
-					container.appendChild(contents.firstChild);
-				}
-			}
+			this.moveChildNodes(contents, container);
 		});
-		while (this.template.body.firstChild) {
-			// TOFIX: To remove scripts added by VSCode's Live Server, but removes all template's script
-			if (this.template.body.firstChild.tagName === "SCRIPT") {
-				this.template.body.firstChild.remove();
-			} else {
-				document.body.appendChild(this.template.body.firstChild);
-			}
-		}
-		//TODO : Never been tested... TEST!
-		this.template.querySelectorAll("link,style,script").forEach(element => {
-			document.head.appendChild(element);
-		});
-		// return 
-		Promise.all(promises);
+		this.moveChildNodes(this.template.body, document.body);
 	}
+
+	static moveChildNodes(from, to = document.body) {
+		while (from.firstChild) {
+			const child = from.firstChild;
+			// PATCH: Remove live-server script and comments
+			if (child.nodeType === Node.COMMENT_NODE && child.textContent.indexOf("live-server") >= 0) {
+				while (child.nextSibling?.nodeType === Node.TEXT_NODE) {
+					console.log(child.nextSibling);
+					child.parentNode.removeChild(child.nextSibling);
+				}
+				if (child.nextSibling?.tagName === "SCRIPT") {
+					child.nextSibling.remove();
+				}
+				child.parentNode.removeChild(child);
+				continue;
+			}
+			to.appendChild(child);
+		}
+	}
+
 	static async clean() {
 		await super.clean();
 		document.querySelectorAll(".th-contrast").forEach(element => {

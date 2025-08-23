@@ -4,6 +4,7 @@
  * @class Theophile
  */
 export default class Theophile {
+	static externals = {};
 	static async exec(root) {
 		console.trace("Theophile BEGIN");
 		await this.init(root);
@@ -54,7 +55,35 @@ export default class Theophile {
 		}
 		return (this._root = result);
 	}
+	static getExternal(url, defaultValue = false) {
+		if (!url) return false;
+		if (this.externals[url]) return this.externals[url];
+		url = this.siteURL(url);
+		if (this.externals[url]) return this.externals[url];
+		let value = (defaultValue instanceof Function) ? defaultValue() : defaultValue;
+		this.externals[url] = value;
+		return value;
+	}
+	static isExternal(url) {
+		if (!url) return false;
+		if (this.externals[url]) return true;
+		url = this.siteURL(url);
+		return this.externals[url] !== undefined;
+	}
+	static addExternal(url, promise, force = false) {
+		let external = this.getExternal(url);
+		if (external && !force) return external;
+		url = this.siteURL(url);
+		this.externals[url] = promise;
+		return promise;
+	}
 	static siteURL(url) {
+		if (!url) {
+			return new URL(this.root);
+		}
+		if (url instanceof URL) {
+			return url;
+		}
 		if (url.match(/^[a-zA-Z0-9]+:\/\//)) {
 			return new URL(url);
 		}
@@ -263,14 +292,20 @@ export default class Theophile {
 		});
 	}
 	static loadLink(url) {
-		return new Promise(resolve => {
+		console.log(`Loading link ${url}`);
+		if (this.externals[url]) {
+			return this.externals[url];
+		}
+		this.externals[url] = new Promise(resolve => {
 			const link = document.head.appendChild(document.createElement("link"));
+			link.classList.add("th-external");
 			link.setAttribute("rel", "stylesheet");
 			link.setAttribute("href", url);
 			link.addEventListener("load", e => {
 				resolve(e.currentTarget);
 			});
 		});
+		return this.externals[url];
 	}
 	static loadPlugins(plugins) {
 		if (this.include) {

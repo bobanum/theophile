@@ -1,3 +1,4 @@
+import Theophile from "../../Theophile.js";
 import Plugin from "../Plugin.js";
 export default class Reference extends Plugin {
 	static async init(Theophile) {
@@ -29,9 +30,10 @@ export default class Reference extends Plugin {
 		var id = href.split("#")[1];
 		if (id) {
 			console.error("Todo"); //TODO
-		} else {
+		} else {			
 			doc.head.querySelectorAll("style,link").forEach(element => {
-				ref.ownerDocument.head.appendChild(element);
+				let url = element.getAttribute("href") || element.getAttribute("src");
+				Theophile.addExternal(url, ref.ownerDocument.head.appendChild(element));
 			});
 			while (doc.body.firstChild) {
 				ref.parentNode.insertBefore(doc.body.firstChild, ref);
