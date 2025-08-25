@@ -16,7 +16,7 @@ export default class Reference extends Plugin {
 	static async processGroup(group, remove = true) {
 		console.log("Reference.init");
 		const result = await this.fetchGroup(group);
-		group.ownerDocument.appendChild(result.head);
+		group.ownerDocument.head.appendChild(result.head);
 		group.parentNode.insertBefore(result.body, group);
 		if (remove) {
 			group.parentNode.removeChild(group);
