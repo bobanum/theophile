@@ -46,7 +46,13 @@ export default class Menu {
             } else {
                 trigger = document.createElement("span");
             }
-            trigger.textContent = item.title;
+            if (item.icon) {
+                const icon = document.createElement("img");
+                icon.src = item.icon;
+                icon.alt = item.title;
+                trigger.appendChild(icon);
+            }
+            trigger.appendChild(document.createTextNode(item.title));
             if (item.evt) {
                 Object.entries(item.evt).forEach(([event, handler]) => {
                     trigger.addEventListener(event, handler);

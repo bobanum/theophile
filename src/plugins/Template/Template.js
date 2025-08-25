@@ -125,6 +125,8 @@ export default class Template extends Plugin {
 			});
 		});
 		document.querySelectorAll(".th-size").forEach(element => {
+			console.log(element);
+			
 			element.addEventListener("click", e => {
 				e.preventDefault();
 				e.stopPropagation();

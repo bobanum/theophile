@@ -113,6 +113,7 @@ export default class Theophile {
 		document.body.innerHTML = html;
 	}
 	static processMarkdown() {
+		return;
 		// console.log(document.body.innerHTML);
 		// document.body.innerHTML = marked.parse('<div>ok</div># quoi \n# <span>_Marked_</span> in browser\n\nRendered by **marked**.');
 		var node, walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
@@ -220,6 +221,7 @@ export default class Theophile {
 	}
 	static async afterMount() {
 		console.trace("Theophile after mount");
+		console.log("debugger;")
 		hljs.highlightAll();
 		const promises = Array.from(Object.values(this.plugins), plugin =>
 			plugin.afterMount()

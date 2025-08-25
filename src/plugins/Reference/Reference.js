@@ -1,9 +1,10 @@
 import Theophile from "../../Theophile.js";
 import Plugin from "../Plugin.js";
 export default class Reference extends Plugin {
+	static refsDocuments = {};
 	static async init(Theophile) {
+
 		await super.init(Theophile);
-		this.refsDocuments = {};
 	}
 	static findReferences() {
 		var refs = Array.from(document.querySelectorAll(".th-references"));
@@ -12,34 +13,70 @@ export default class Reference extends Plugin {
 		});
 		return Promise.all(promises);
 	}
-	static async processGroup(group) {
-		var refs = Array.from(group.querySelectorAll("a"));
-		await Promise.all(
-			refs.map(ref => {
-				return this.processRef(ref);
-			})
-		);
-		while (group.firstChild) {
-			group.parentNode.insertBefore(group.firstChild, group);
+	static async processGroup(group, remove = true) {
+		console.log("Reference.init");
+		const result = await this.fetchGroup(group);
+		group.ownerDocument.appendChild(result.head);
+		group.parentNode.insertBefore(result.body, group);
+		if (remove) {
+			group.parentNode.removeChild(group);
 		}
-		group.parentNode.removeChild(group);
 	}
-	static async processRef(ref) {
+	static async fetchGroup(group, result = null) {
+		result = result || this.fragments();
+		var refs = Array.from(group.querySelectorAll("a"));
+
+		const promises = refs.map(ref => {
+			ref.remove();
+			return this.fetchRef(ref);
+		});
+		const docs = await Promise.all(promises);
+		docs.forEach(doc => {
+			result.head.appendChild(doc.head);
+			result.body.appendChild(doc.body);
+		});
+		while (group.firstChild) {
+			result.body.appendChild(group.firstChild);
+		}
+		return result;
+	}
+	static fetchRef(ref) {
 		const href = ref.getAttribute("href");
-		const doc = await this.getRefDocument(href);
-		var id = href.split("#")[1];
-		if (id) {
-			console.error("Todo"); //TODO
-		} else {			
-			doc.head.querySelectorAll("style,link").forEach(element => {
-				let url = element.getAttribute("href") || element.getAttribute("src");
-				Theophile.addExternal(url, ref.ownerDocument.head.appendChild(element));
-			});
-			while (doc.body.firstChild) {
-				ref.parentNode.insertBefore(doc.body.firstChild, ref);
-			}
+		return this.processUrl(href);
+	}
+	static async processRef(ref, remove = true) {
+		const href = ref.getAttribute("href");
+		const { head, body } = await this.processUrl(href);
+		ref.ownerDocument.head.appendChild(head);
+		ref.parentNode.insertBefore(body, ref);
+		if (remove) {
 			ref.parentNode.removeChild(ref);
 		}
+	}
+	static async processUrl(url, result = null) {
+		result = result || this.fragments();
+		const [href, id] = url.split("#");
+		const doc = await this.getRefDocument(href);
+		if (id) {
+			console.error("Todo"); //TODO
+		} else {
+			result.body.appendChild(this.dom.permalink(url));
+			return this.processDoc(doc, result);
+		}
+	}
+	static fragments() {
+		return { head: document.createDocumentFragment(), body: document.createDocumentFragment() };
+	}
+	static processDoc(doc, result = null) {
+		result = result || this.fragments();
+		doc.head.querySelectorAll("style,link").forEach(element => {
+			let url = element.getAttribute("href") || element.getAttribute("src");
+			Theophile.addExternal(url, result.head.appendChild(element));
+		});
+		while (doc.body.firstChild) {
+			result.body.appendChild(doc.body.firstChild);
+		}
+		return result;
 	}
 	static zzzgetRefDocument(url) {
 		url = url.split("#")[0];
@@ -146,4 +183,31 @@ export default class Reference extends Plugin {
 		const data = await this.findReferences();
 		return data;
 	}
+	static dom = {
+		permalink: (url, title = "🔗&#xFE0E;") => {
+			const a = document.createElement("a");
+			a.classList.add("th-permalink");
+			a.href = url;
+			a.innerHTML = title;
+			return a;
+		}
+	}
 }
+class ThReference extends HTMLElement {
+	constructor() {
+		super();
+		const fragments = Reference.fragments();
+		new Promise(resolve => {
+			if (!this.hasAttribute("href")) return resolve(fragments);
+			fragments.body.appendChild(Reference.dom.permalink(this.getAttribute("href")));
+			resolve(Reference.processUrl(this.getAttribute("href"), fragments));
+		}).then(fragments => {
+			return Reference.fetchGroup(this, fragments)
+		}).then(data => {
+			document.head.appendChild(data.head);
+			this.parentNode.insertBefore(data.body, this);
+			this.parentNode.removeChild(this);
+		});
+	}
+}
+customElements.define("th-reference", ThReference);
