@@ -1,22 +1,56 @@
+th-toc {
+	position: relative;
+	grid-row: 1 / -1;
+	grid-column: 1;
+	align-self: flex-start;
+	left: auto !important;
+
+	&::after {
+		display: none;
+	}
+
+	>ul {
+		overflow: visible;
+	}
+
+	ul {
+		display: block !important;
+	}
+}
+
+/* th-template:has(th-toc.pinned) {
+	#interface {
+		transform: rotate(10deg);
+
+	}
+} */
+
 #interface {
 	min-height: 100%;
 	display: grid;
 	grid-template-rows: auto 1fr auto;
-	& > header, & > footer {
+	gap: 1em 0;
+	grid-template-columns: 20ch 1fr;
+
+	&>header,
+	&>footer {
 		padding: .5em 1em;
 		background-color: hsl(var(--h), var(--s), 30%);
 		color: hsl(var(--h), var(--s), 100%);
 		display: flex;
 		justify-content: space-between;
 	}
-	& > header {
+
+	&>header {
 		order: -1000;
 	}
-	& > nav {
+
+	&>nav {
 		background-color: hsl(var(--h), var(--s), 35%);
 		color: hsl(var(--h), var(--s), 100%);
 	}
-	& > footer {
+
+	&>footer {
 		order: 1000;
 	}
 }

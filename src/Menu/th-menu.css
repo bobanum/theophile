@@ -1,4 +1,5 @@
 th-menu {
+	/* --sub-icon: '▽' '▷'; */
 	--icon-size: 1.5em;
 	--gap: 0.5em;
 	display: flex;
@@ -7,11 +8,14 @@ th-menu {
 	top: 0;
 	left: 100%;
 	box-shadow: 2px 2px 1px #0008;
-
+	background-color: hsl(var(--h), var(--s), var(--d));
+	a, span {
+		quotes: var(--sub-icon, '⯆' '⯈');
+	}
 	[data-icon] {
 		&:not([data-icon=''])::before {
 			content: attr(data-icon);
-			font-family: var(--icon-font);
+			font-family: var(--icon-font, 'Material Icons');
 		}
 
 		&[data-icon='']::before {
@@ -33,39 +37,41 @@ th-menu {
 			}
 		}
 	}
-}
 
-nav>th-menu {
-	position: relative;
-	flex-direction: row;
-	top: auto;
-	left: auto;
-	box-shadow: none;
+	&:not(:is(th-menu-item>*)) {
+		position: relative;
+		flex-direction: row;
+		top: auto;
+		left: auto;
+		box-shadow: none;
 
-	>th-menu-item {
-		>th-menu {
-			left: 0;
-			top: 100%;
-			margin-top: -2px;
-		}
+		>th-menu-item {
+			>th-menu {
+				left: 0;
+				top: 100%;
+				margin-top: -2px;
+			}
 
-		&:has(th-menu) {
+			&:has(th-menu) {
 
-			>a,
-			>span {
-				&::after {
-					/* content: '▷';
-					content: '⯈';
-					content: '▽'; */
-					content: '⯆';
+				>a,
+				>span {
+					&::after {
+						/* content: '▷';
+						content: '⯈';
+						content: '▽'; */
+						/* content: '⯆'; */
+						/* content: var(--sub-icon, '⯆'); */
+						content: open-quote;
+					}
 				}
 			}
 		}
-	}
 
-	a {
-		text-decoration: none;
-		color: inherit;
+		a {
+			text-decoration: none;
+			color: inherit;
+		}
 	}
 }
 
@@ -101,7 +107,7 @@ th-menu-item {
 
 	&:hover {
 		background-color: hsl(var(--h), var(--s), var(--l));
-		color: var(--texte-hover);
+		color: var(--text-hover);
 	}
 
 	&:not(:hover)>th-menu {
@@ -116,7 +122,9 @@ th-menu-item {
 				/* content: '▽';
 				content: '⯆';
 				content: '▷'; */
-				content: '⯈';
+				/* content: '⯈'; */
+				content: close-quote;
+
 			}
 		}
 	}

@@ -2,6 +2,11 @@ import TheophileElement from "../TheophileElement.js";
 import Menu from "./Menu.js";
 
 export default class MenuItem extends TheophileElement {
+
+	constructor() {
+		super();
+		this.complete = false;
+	}
 	static get observedAttributes() {
 		return this.defineAttributes({
 			href: true,
@@ -10,16 +15,29 @@ export default class MenuItem extends TheophileElement {
 			children: true,
 			disabled: true,
 			tab: true,
+			src: true,
 		});
 	};
+	adoptedCallback() {
+		console.log("adopted", this);
+	}
 	connectedCallback() {
-		this.setAttribute("role", "menuitem");
+		if (this.complete) return;		
+		// this.shadowRoot.appendChild(MenuItem.DOM.link("style2.css", this.meta));
 		this.shadowRoot.appendChild(this.DOM.main());
 		this.appendChild(this.DOM.label());
 		TheophileElement.wrap(this.querySelectorAll(":scope>th-menu-item"), 'th-menu');
 		this.querySelectorAll(":scope>th-menu").forEach((child) => {
 			child.slot = "menu";
 		});
+		this.complete = true;
+	}
+	connectedMoveCallback(elt) {
+		console.log(arguments);
+		
+		if (elt.tagName === "TH-MENU-ITEM") {
+			elt.slot = "menu";
+		}
 	}
 	get_href() {
 		return this.getAttribute("href");
@@ -30,9 +48,29 @@ export default class MenuItem extends TheophileElement {
 	get_children() {
 		return this.querySelectorAll(":scope>th-menu-item");
 	}
-	set_children(value) {		
+	set_children(value) {
 		const children = Menu.parse(value);
 		this.appendChild(children);
+	}
+	get_src() {
+		return this.getAttribute("src");
+	}
+	set_src(value) {
+		const sub = document.createElement("th-menu");
+		sub.setAttribute("src", value);
+		sub.setAttribute("slot", "menu");
+		this.appendChild(sub);
+		sub.addEventListener("load", (e) => {
+			const menus = [...this.querySelectorAll(":scope>th-menu")];
+			
+			const first = menus.shift();
+			menus.forEach((menu) => {
+				while (menu.firstElementChild) {
+					first.appendChild(menu.firstElementChild);
+				}
+				menu.remove();
+			});
+		});
 	}
 	DOM = {
 		main: () => {
@@ -42,7 +80,7 @@ export default class MenuItem extends TheophileElement {
 			result.appendChild(TheophileElement.DOM.slot("menu"));
 			return result;
 		},
-		label: () => {
+		label: () => {			
 			let label = this.DOM.label0();
 			label.slot = 'label';
 			label.appendChild(TheophileElement.DOM.slot());
@@ -101,7 +139,7 @@ export default class MenuItem extends TheophileElement {
 		},
 		style: (css = '') => {
 			const style = document.createElement("style");
-			style.textContent = `::slotted(th-menu) {z-index: 1000;}` + css;
+			style.textContent = `::slotted(th-menu) {z-index: 100;}` + css;
 			return style;
 		},
 	};
@@ -131,7 +169,7 @@ export default class MenuItem extends TheophileElement {
 				this[attr] = line[i];
 			}
 		});
-		
+
 		return this;
 	}
 	static parseTxt(line) {

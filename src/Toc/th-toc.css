@@ -1,7 +1,17 @@
-:root {
+
+:host {
     --th-toc-width: 300px;
+    grid-row: 1 / -1;
+    order: -1;
+    display: block;
+    margin: 1em;
 }
-.th-toc-pinned {
+:host(.pinned) {
+    .pin {
+        background-color: #ff0;
+    }
+}
+dummy:root:has(*.pinned) {
     body {
         margin-left: var(--th-toc-width);
         /* display: grid;

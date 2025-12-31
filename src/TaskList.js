@@ -6,7 +6,7 @@ export default class TaskList extends EventTarget {
 
 	add(task) {
 		if (this._tasks.has(task)) return;
-		
+
 		this._tasks.add(task);
 
 		task.addEventListener("ready", () => {
@@ -27,6 +27,7 @@ export default class TaskList extends EventTarget {
 			return Promise.resolve();
 		}
 		return new Promise((resolve) => {
+
 			this.addEventListener("empty", () => {
 				resolve();
 			});

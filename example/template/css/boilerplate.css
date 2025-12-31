@@ -6,6 +6,8 @@ html {
 
 body {
 	height: 100vh;
+	background-color: hsl(var(--h), var(--s), var(--d));
+	color: hsl(var(--h), var(--s), var(--l));
 }
 
 h1,

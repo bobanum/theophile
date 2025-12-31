@@ -1,5 +1,11 @@
+:host(.pinned) {
+    
+    .pin {
+        background-color: #ff0;
+    }
+}
 
-:host {
+dummy:host {
     --speed: 250ms;
     --trigger-width: 2ch;
     --delay: 500ms;
@@ -23,7 +29,7 @@
     transition-timing-function: ease-in;
     transition-delay: 0ms;
     overflow: visible;
-
+    
 
     &::after {
         content: "≡";
@@ -38,7 +44,7 @@
         line-height: 0.9em;
         opacity: 0.5;
         top: 0.5rem;
-        background-color: #fff4;
+        background-color: #fff1;
         border-top-right-radius: 0.25rem;
         border-bottom-right-radius: 0.25rem;
         color: white;
@@ -47,7 +53,7 @@
 }
 .pin {
     position: absolute;
-    z-index: 1000;
+    z-index: var(--toc-layer, 1000);
     right: 0.25ch;
     top: 0.25em;
     width: 1.3em;
@@ -132,9 +138,9 @@ a {
     font-weight: bold;
 }
 
-.th-toc-level-1 li:not(:hover):not(.th-toc-current-within)>ul {
+/* .th-toc-level-1 li:not(:hover):not(.th-toc-current-within)>ul {
     display: none;
-}
+} */
 
 .th-toc-current-within li>ul,
 :hover li>ul {

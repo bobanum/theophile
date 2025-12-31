@@ -3,13 +3,22 @@ import MenuItem from "./MenuItem.js";
 export default class Menu extends TheophileElement {
 	constructor() {
 		super();
-		if (this.hasAttribute("src")) {
-			this.manageSrc(this.getAttribute("src"));
-		}
+		this.complete = false;
 	}
-	manageSrc() {
-		if (!this.hasAttribute("src")) return;
-		let src = new URL(this.getAttribute("src"), location.href);
+	static get observedAttributes() {
+		return this.defineAttributes({
+			src: {
+				get: function () { return this._src; },
+				set: function (value) {
+					if (value === this._src?.href) return;
+					this._src = new URL(value, location);
+					this.setAttribute("src", this._src);
+					this.manageSrc(this._src);
+				},
+			},
+		});
+	}
+	manageSrc(src) {
 		if (src.href.endsWith(".js")) {
 			this.fetchJs(src);
 		} else if (src.href.endsWith(".json")) {
@@ -21,7 +30,6 @@ export default class Menu extends TheophileElement {
 		} else {
 			console.error("Unsupported file type:", src.href);
 		}
-
 	}
 	async fetchJs(src) {
 		try {
@@ -53,10 +61,10 @@ export default class Menu extends TheophileElement {
 			const parser = new DOMParser();
 			const doc = parser.parseFromString(data, "text/html");
 			const items = doc.body.firstChild.children;
-			console.log(doc.body.firstChild.children);
 			[...items].forEach((item) => {
 				this.appendChild(item);
 			});
+			this.dispatchEvent(new Event("load"));
 		} catch (error) {
 			console.error("Error fetching HTML:", error);
 		}
@@ -70,12 +78,16 @@ export default class Menu extends TheophileElement {
 			const txt = await response.text();
 			const lines = txt.split(/\r\n|\n\r|\r|\n/);
 			this.parseTxt(lines);
+			this.dispatchEvent(new Event("load"));
 		} catch (error) {
 			console.error("Error fetching TXT:", error);
 		}
 	}
 	connectedCallback() {
+		// this.shadowRoot.appendChild(this.DOM.link());
+		if (this.complete) return;
 		this.shadowRoot.appendChild(this.DOM.main());
+		this.complete = true;
 	}
 	DOM = {
 		main: () => {

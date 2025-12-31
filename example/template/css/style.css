@@ -3,3 +3,10 @@
 @import url('interface.css');
 @import url('nav.css');
 @import url('app.css');
+
+
+
+body:has(th-toc) {
+	display: grid;
+	/* rotate: 1deg; */
+}

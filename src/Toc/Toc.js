@@ -151,7 +151,7 @@ export default class Toc extends TheophileElement {
 			pin.addEventListener("click", (e) => {
 				e.stopPropagation();
 				
-				document.documentElement.classList.toggle("th-toc-pinned");
+				this.classList.toggle("pinned");
 			});
 			return pin;
 		},

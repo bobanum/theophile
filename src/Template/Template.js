@@ -30,14 +30,12 @@ export default class Template extends TheophileElement {
 	static apply(templateUrl, selector = "body") {		
 		return new Promise((resolve, reject) => {
 			const element = document.querySelector(selector);
-			const template = document.createElement('th-template');
-			template.setAttribute("href", templateUrl);
-			while (element.firstChild) {
-				template.appendChild(element.firstChild);
-			}
+			const template = Template.createElement({href: templateUrl, content: element.childNodes});
+			Template.addTask(template);
 			element.appendChild(template);
 			template.addEventListener("load", () => {
 				resolve(template.shadowRoot);
+				Template.removeTask(template);
 			});
 		});
 	}

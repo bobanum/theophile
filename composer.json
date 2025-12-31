@@ -1,0 +1,10 @@
+{
+    "name": "bobanum/theophile",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Bobanum\\Theophile\\": "src/"
+        }
+    },
+    "require": {}
+}

@@ -1,0 +1,7 @@
+body:has(th-toc.pinned) {
+	margin-right: var(--th-toc-width, 25ch);
+}
+
+* {
+	background-image: linear-gradient(to bottom, hsl(var(--h), var(--s), 20%), hsl(var(--h), var(--s), 30%));
+}

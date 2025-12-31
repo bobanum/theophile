@@ -1,5 +1,4 @@
 import TheophileElement from "../TheophileElement.js";
-import TaskList from "../TaskList.js";
 export default class Include extends TheophileElement {
 	static get observedAttributes() {
 		return this.defineAttributes({
@@ -25,8 +24,7 @@ export default class Include extends TheophileElement {
 						while (doc.activeElement.firstChild) {
 							this.appendChild(doc.activeElement.firstChild);
 						}
-						
-						this.dispatchEvent(new CustomEvent("ready", { detail: { template: doc } }));
+						Include.removeTask(this);
 					});
 				},
 			},

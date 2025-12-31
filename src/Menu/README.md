@@ -6,12 +6,18 @@ The Menu component is a custom HTML element that allows you to create a hierarch
 The `<th-menu>` element is used to create a menu. It can contain multiple `<th-menu-item>` elements, which represent the individual items in the menu.
 
 ### Attributes
-| Attribute      | Type     | Default      | Description                                                                                                                                                         | Example                              |
-| -------------- | -------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| `src`⌚︎         | `string` | `undefined`  | The URL of the menu. Supported formats : `.js`, `.json`, `.html`, `.xml`, `.txt`.
+| Attribute                            | Type     | Default      | Description                                                                                   | Example                  |
+| ------------------------------------ | -------- | ------------ | --------------------------------------------------------------------------------------------- | ------------------------ |
+| `src`⌚︎                               | `string` | `undefined`  | The URL of the menu. Supported formats : `.js`, `.json`, `.html`, `.xml`, `.txt`.             |
 | `src="menu.js"`<br>`src="menu.json"` |
-| `style`⌚︎       | `string` | `undefined`  | The CSS style to apply to the menu. This can be used to customize the appearance of the menu.                                                                       | `style="color: red;"`                |
-| `orientation`⌚︎ | `string` | `horizontal` | The orientation of the menu. It can be either `horizontal` or `vertical`.                                                                                           | `orientation="vertical"`             |
+| `style`⌚︎                             | `string` | `undefined`  | The CSS style to apply to the menu. This can be used to customize the appearance of the menu. | `style="color: red;"`    |
+| `orientation`⌚︎                       | `string` | `horizontal` | The orientation of the menu. It can be either `horizontal` or `vertical`.                     | `orientation="vertical"` |
+
+### Custom CSS Properties
+| Property      | Default Value | Description                           |
+| ------------- | ------------- | ------------------------------------- |
+| `--icon-size` | `#fff`        | The size of the icons.                |
+| `--sub-icon`  | `#fff`        | The icon of the submenu. Default: '⯆' |
 
 ## `<th-menu-item>`
 The `<th-menu-item>` element is used to create an individual item in the menu. It can contain a label, an icon, and a nested `<th-menu>` element to create submenus.
@@ -27,7 +33,9 @@ The `<th-menu-item>` element is used to create an individual item in the menu. I
 | `disabled`⌚︎ | `boolean` | `false`     | Whether the menu item is disabled. If `true`, the menu item will not be clickable and will be displayed in a disabled state. (The value of the attribute will be evaluated as a JavaScript expression) | `disabled`<br>`disabled="true"`             |
 | `style`⌚︎    | `string`  | `undefined` | The CSS style to apply to the menu item. This can be used to customize the appearance of the menu item.                                                                                                | `style="color: red;"`                       |
 
-## HTML Examples
+## Examples
+
+### HTML Examples
 ```html
 <nav>
 	<th-menu src="menu.js" orientation="horizontal"></th-menu>
@@ -61,7 +69,7 @@ The `<th-menu-item>` element is used to create an individual item in the menu. I
 </nav>
 ```
 
-## JavaScript Example
+### JavaScript Example
 ```javascript
 // menu.js (dummy example)
 const menu = [
@@ -82,7 +90,7 @@ const menu = [
 export default menu;
 ```
 
-## JSON Example
+### JSON Example
 ```json
 [
 	{
@@ -111,7 +119,7 @@ export default menu;
 ]
 ```
 
-## TXT Example
+### TXT Example
 ```txt
 Home|index.html|home
 Courses||book

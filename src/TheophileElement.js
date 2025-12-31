@@ -1,88 +1,3 @@
-/**
- * TheophileElement is a base class for custom elements, providing utility methods for attribute management,
- * URL rebasing, HTML/CSS processing, and asynchronous loading of external resources.
- * 
- * @extends HTMLElement
- * 
- * @property {string} static prefix - The prefix used for custom element tag names.
- * @property {TaskList} static _tasks - A static TaskList instance for managing asynchronous tasks.
- * @property {object} static DOM - Utility methods for DOM manipulation (link, slot).
- * @property {object} static meta - Metadata for the element, set during initialization.
- * @property {string} static tagName - The custom element's tag name, set during initialization.
- * 
- * @method static defineAttributes
- *   Defines properties as attributes on the element's prototype.
- *   @param {object} properties - Properties to define.
- *   @returns {string[]} - Array of property names defined.
- * 
- * @constructor
- *   Attaches an open shadow root to the element.
- * 
- * @method attributeChangedCallback
- *   Handles attribute changes and updates the corresponding property.
- *   @param {string} name - The name of the changed attribute.
- *   @param {string|null} oldValue - The old value of the attribute.
- *   @param {string|null} newValue - The new value of the attribute.
- * 
- * @method rebaseURL
- *   Rebases a URL relative to a base, with security checks for unsafe URLs.
- *   @param {string} url - The URL to rebase.
- *   @param {string} [base=this._href] - The base URL.
- *   @returns {string} - The rebased URL or the original if unsafe.
- * 
- * @method cleanup
- *   Removes injected live-server code from HTML.
- *   @param {string} html - The HTML string to clean.
- *   @returns {string} - Cleaned HTML.
- * 
- * @method excludeText
- *   Excludes text between start and end markers.
- *   @param {string} text - The text to process.
- *   @param {string} start - The start marker.
- *   @param {string} end - The end marker.
- *   @returns {string} - Text with excluded section removed.
- * 
- * @method rebaseHtmlUrls
- *   Rebases all relevant HTML attribute URLs in a string.
- *   @param {string} html - The HTML string to process.
- *   @returns {string} - HTML with rebased URLs.
- * 
- * @method rebaseCssUrls
- *   Rebases all CSS url() references in a string.
- *   @param {string} html - The HTML string to process.
- *   @returns {string} - HTML with rebased CSS URLs.
- * 
- * @method load
- *   Asynchronously loads and processes an HTML file, dispatching a "load" event.
- *   @param {string} url - The URL to load.
- *   @returns {Promise<Document|undefined>} - The loaded HTML document or undefined on error.
- * 
- * @method static wrap
- *   Wraps a DOM node or NodeList with a wrapper element.
- *   @param {Node|NodeList} content - The content to wrap.
- *   @param {string|Element} wrapper - The wrapper element or tag name.
- *   @returns {Element} - The wrapper element containing the content.
- * 
- * @method static addTask
- *   Adds a task to the static TaskList.
- *   @param {Function|Promise} task - The task to add.
- *   @returns {typeof TheophileElement} - The class itself for chaining.
- * 
- * @method static ready
- *   Waits for all tasks in the static TaskList to complete.
- *   @returns {Promise} - Resolves when all tasks are complete.
- * 
- * @method static addStyle
- *   Adds a stylesheet link to the document head.
- *   @param {string} url - The URL of the stylesheet.
- *   @returns {typeof TheophileElement} - The class itself for chaining.
- * 
- * @method static init
- *   Initializes the element with metadata and defines the custom element.
- *   @param {object} meta - Metadata for the element.
- *   @param {string} [tagName] - Optional custom tag name.
- *   @returns {typeof TheophileElement} - The class itself for chaining.
- */
 import TaskList from "./TaskList.js";
 
 export default class TheophileElement extends HTMLElement {
@@ -91,15 +6,13 @@ export default class TheophileElement extends HTMLElement {
 	 * @static
 	 */
 	static prefix = "th";
-	static _tasks = new TaskList();
 	/**
 	 * Creates an instance of the custom element and attaches an open shadow DOM.
 	 * Calls the parent class constructor.
 	 */
-	constructor() {
+	constructor(mode = "open") {
 		super();
-
-		this.attachShadow({ mode: 'open' });
+		this.test = this.attachShadow({ mode });
 	}
 	/**
 	 * Called when one of the element's observed attributes is changed.
@@ -140,7 +53,7 @@ export default class TheophileElement extends HTMLElement {
 		};
 		for (const [key, value] of Object.entries(properties)) {
 			if (value === true) {
-				
+
 				Object.defineProperty(this.prototype, key, {
 
 					get: function () {
@@ -148,7 +61,7 @@ export default class TheophileElement extends HTMLElement {
 					},
 					set: function (value) {
 						if (this[`set_${key}`]) return this[`set_${key}`](value);
-						
+
 						if (this[`_${key}`] === value) return;
 						this[`_${key}`] = value;
 						this.setAttribute(key, value);
@@ -316,6 +229,16 @@ export default class TheophileElement extends HTMLElement {
 		return this;
 	}
 	/**
+	 * Removes a task from the internal tasks set.
+	 *
+	 * @param {*} task - The task to remove.
+	 * @returns {boolean} True if the task was successfully removed, false otherwise.
+	 */
+	static removeTask(task) {
+		const result = this._tasks.delete(task);
+		return result;
+	}
+	/**
 	 * Returns a promise that resolves when all tasks are complete.
 	 * 
 	 * @returns {Promise<void>} A promise that resolves when the class's tasks are complete.
@@ -339,16 +262,22 @@ export default class TheophileElement extends HTMLElement {
 	 *   @returns {HTMLSlotElement} The created <slot> element.
 	 */
 	static DOM = {
-		link: function (url) {
-			url = url || this.tagName + ".css";
-			let id = this.tagName + "-style";
-			if (document.getElementById(id)) {
-				return document.createDocumentFragment();
-			}
+		link: function (url, base = location.href) {
+			const tagName = (this.tagName || base.tagName)?.toLowerCase();
+			url = url || (tagName || "style") + ".css";
+			base = base?.meta?.url || base?.url || base;
 			const link = document.createElement("link");
+			if (tagName) {
+				let id = tagName + "-style";
+
+				if (document.getElementById(id)) {
+					return document.createDocumentFragment();
+				}
+				link.id = id;
+			}
 			link.rel = "stylesheet";
-			link.href = new URL(url, this.meta.url).href;
-			link.id = id;
+
+			link.href = new URL(url, base).href;
 			return link;
 		},
 		slot: function (name, content) {
@@ -369,8 +298,25 @@ export default class TheophileElement extends HTMLElement {
 	 * @returns {typeof TheophileElement} The class itself for method chaining.
 	 */
 	static addStyle(url) {
-		document.head.appendChild(this.DOM.link.call(this, url));
+		document.head.appendChild(this.DOM.link(url, this));
 		return this;
+	}
+	static createElement(attributes = {}) {
+		const element = document.createElement(this.tagName);
+		for (const [key, value] of Object.entries(attributes)) {
+			if (key === "content") {
+				if (value instanceof Node) {
+					element.appendChild(value);
+				} else if (value.length) {
+					[...value].forEach(child => element.appendChild(child));
+				} else {
+					element.textContent = value;
+				}
+			} else {
+				element.setAttribute(key, value);
+			}
+		}
+		return element;
 	}
 	/**
 	 * Initializes the custom element by setting its metadata and tag name, then defines it with the Custom Elements API.
@@ -380,7 +326,8 @@ export default class TheophileElement extends HTMLElement {
 	 * @returns {typeof TheophileElement} The class itself, allowing for chaining.
 	 */
 	static init(meta, tagName) {
-		this.meta = meta;
+		this.meta = this.prototype.meta = meta;
+		this._tasks = new TaskList();
 
 		this.tagName = tagName || `${this.prefix}${this.name.replace(/([A-Z])/g, "-$1").toLowerCase()}`;
 

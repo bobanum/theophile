@@ -1,0 +1,5 @@
+Lorem|lorem.html
+Ipsum|ipsum.html
+	Dolor|dolor.html
+	Sit|sit.html
+Amet|amet.html

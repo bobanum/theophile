@@ -10,13 +10,12 @@ html {
   height: 100%;
   font-family: "Unna", serif;
   font-family: "Cormorant Infant", serif;
-  font-size: 22px;
+  font-size: 220px;
 }
 
 body {
   height: 100%;
   margin: 0;
-  background-color: hsl(var(--hue), var(--sat), var(--lum));
   color: white;
 }
 
