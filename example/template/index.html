@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>Theophile — Starter</title>
+	<link rel="shortcut icon" href="../favicon.svg" type="image/svg+xml">
+</head>
+
+<body>
+	<template id="cool">
+		<h2>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Modi, quidem fugiat non aspernatur vel enim odit fugit qui ipsam quaerat, obcaecati itaque. Minus odit architecto alias exercitationem culpa natus sequi.</h2>
+		<slot></slot>
+	</template>
+	<template>
+		<link rel="stylesheet" href="css/style.css">
+		<header class="site-header">
+			<div class="container">
+				<a class="brand" href="#">
+					<img src="img/logo.svg" alt="Theophile logo" class="logo">
+					<span class="site-title">Theophile</span>
+				</a>
+				<nav class="main-nav" aria-label="Main navigation">
+					<ul>
+						<li><a href="#">Home</a></li>
+						<li><a href="#">About</a></li>
+						<li><a href="#">Services</a></li>
+						<li><a href="#">Contact</a></li>
+					</ul>
+				</nav>
+			</div>
+		</header>
+
+		<main class="site-main container">
+			<th-title>Ceci est mon TITLE</th-title>
+			<section class="hero">
+				<h1>Build faster with small, reusable components</h1>
+				<p class="lead">A minimal template: header, navigation, content, sidebar and footer.</p>
+				<p><a class="btn" href="#">Get started</a></p>
+			</section>
+
+			<section class="content-area">
+				<slot>
+					<article class="content">
+						<h2>Overview</h2>
+						<p>This is a lightweight starter page suitable for demos and small projects. Customize the components and styles in <code>css/style.css</code>.</p>
+						<h3>Features</h3>
+						<ul>
+							<li>Responsive header and navigation</li>
+							<li>Hero area with call-to-action</li>
+							<li>Sidebar menu</li>
+						</ul>
+					</article>
+				</slot>
+
+				<slot name="sidebar">
+					<aside class="sidebar">
+						<h3>Menu</h3>
+						<ul class="side-menu">
+							<li><a href="#">Introduction</a></li>
+							<li><a href="#">Examples</a></li>
+							<li><a href="#">Docs</a></li>
+						</ul>
+					</aside>
+				</slot>
+			</section>
+		</main>
+
+		<footer class="site-footer">
+			<div class="container">
+				<p>&copy; 2026 Theophile — Crafted with care</p>
+				<p class="credits">Made by <a href="#">You</a></p>
+			</div>
+		</footer>
+	</template>
+</body>
+
+</html>

@@ -1,5 +1,5 @@
 {
-  "name": "th2",
+  "name": "theophile",
   "version": "0.1.0",
   "description": "th2 - vanilla JS project using node modules (bundled with esbuild)",
   "main": "dist/cjs/index.js",
@@ -8,23 +8,23 @@
   "jsdelivr": "dist/bundle.standalone.min.js",
   "exports": {
     ".": {
+      "browser": "./dist/bundle.standalone.min.js",
       "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js",
-      "browser": "./dist/bundle.standalone.min.js"
+      "require": "./dist/cjs/index.js"
     }
   },
   "files": [
     "dist"
   ],
-  "sideEffects": false,
+  "sideEffects": true,
   "scripts": {
-    "start": "esbuild src/main.js --bundle --servedir=public --outfile=public/bundle.js --sourcemap",
+    "dev": "esbuild src/main.js --bundle --servedir=example --outfile=example/bundle.js --sourcemap",
     "build": "npm run build:rollup && npm run build:esbuild",
     "build:rollup": "rollup -c",
-    "build:esbuild": "esbuild src/main.js --bundle --minify --outfile=public/bundle.js",
+    "build:esbuild": "esbuild src/main.js --bundle --minify --outfile=example/bundle.js",
     "build:watch": "rollup -c -w",
     "prepublishOnly": "npm run build:rollup",
-    "publish:gh-pages": "npm run build:esbuild && npx gh-pages -d public"
+    "publish:gh-pages": "npm run build:esbuild && npx gh-pages -d example"
   },
   "dependencies": {
     "@bobanum/webponents": "github:bobanum/webponents",
@@ -34,7 +34,7 @@
     "@rollup/plugin-commonjs": "^25.0.0",
     "@rollup/plugin-node-resolve": "^15.0.0",
     "@rollup/plugin-terser": "^0.4.0",
-    "esbuild": "^0.18.0",
+    "esbuild": "^0.27.2",
     "gh-pages": "^5.0.0",
     "rollup": "^4.0.0"
   }

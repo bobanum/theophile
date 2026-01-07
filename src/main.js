@@ -1,8 +1,5 @@
 import _ from 'lodash';
-import App from './App.js';
-console.log(App.test());
-
-
+import './App.js';
 const arr = [1, 2, 3, 4, 5, 6];
 const chunks = _.chunk(arr, 2);
 
