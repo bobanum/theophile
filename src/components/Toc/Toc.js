@@ -1,0 +1,147 @@
+import Webponent from "../Webponent.js";
+import styles from './toc.css';
+
+export default class Toc extends Webponent {
+	constructor() {
+		super();
+	}
+
+	static properties = {
+		
+	};
+
+	connectedCallback() {
+		// Inject styles into shadow root
+		this.shadowRoot.appendChild(super.dom.style(styles));
+
+		const headings = Array.from(document.body.querySelectorAll('h1,h2,h3'));
+		const hierarchy = this.getHierarchy(headings);
+		this.shadowRoot.appendChild(this.dom.main(hierarchy));
+		this.shadowRoot.appendChild(this.dom.pin());
+		const toplink = this.dom.toplink();
+		headings.forEach(heading => {
+			heading.appendChild(this.dom.permalink(heading));
+			heading.appendChild(toplink.cloneNode(true));
+		});
+	}
+	findId(txt) {
+		const id = this.text2slug(txt);
+
+		if (!document.getElementById(id)) {
+			return id;
+		}
+		let number = 2;
+		while (document.getElementById(id + "-" + number)) {
+			number += 1;
+		}
+		return id + "-" + number;
+	}
+	getHierarchy(nodeList) {
+		const result = [];
+		var currentLevel = 0;
+		const path = [result];
+		nodeList.forEach(heading => {
+			if (!heading.id) {
+				heading.id = this.findId(heading.innerText);
+			}
+			let level = parseInt(heading.tagName[1]);
+			const headingObject = { heading: heading, group: [] };
+			while (level > currentLevel + 1) {
+				const empty = { heading: null, group: [] };
+				path[currentLevel].push(empty);
+				currentLevel += 1;
+				path[currentLevel] = empty.group;
+			}
+			if (level === currentLevel) {
+				path[currentLevel - 1].push(headingObject);
+				path[currentLevel] = headingObject.group;
+			} else if (level < currentLevel) {
+				currentLevel = level;
+				path[currentLevel - 1].push(headingObject);
+				path[currentLevel] = headingObject.group;
+			} else if (level === currentLevel + 1) {
+				path[currentLevel].push(headingObject);
+				currentLevel = level;
+				path[currentLevel] = headingObject.group;
+			}
+		});
+		return result;
+	}
+	text2slug(text) {
+		const slug = text.toLowerCase()
+			.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+			.replace(/[^a-z0-9]+/g, "-")
+			.replace(/^-+|-+$/g, "");
+		return slug;
+	}
+	dom = {
+		style: () => {
+			const result = document.createElement("style");
+			result.textContent = styles;
+			return result;
+		},
+		main: (hierarchy) => {
+			const result = document.createDocumentFragment();
+			const slotHeader = result.appendChild(document.createElement("slot"));
+			// slotHeader.name = "header";
+
+			result.appendChild(this.dom.ul(hierarchy));
+			return result;
+		},
+		ul: (group, level = 1) => {
+			const result = document.createElement("ul");
+			group.forEach(headingObject => {
+				const li = result.appendChild(document.createElement("li"));
+				li.classList.add("level-" + level);
+				if (headingObject.heading) {
+					headingObject.heading.tocElement = li;
+					li.destination = headingObject.heading;
+					const div = li.appendChild(document.createElement("div"));
+					const a = div.appendChild(document.createElement("a"));
+					a.href = "#" + headingObject.heading.id;
+					a.innerHTML = headingObject.heading.innerText;
+				} else {
+					li.classList.add("no-heading");
+				}
+				if (headingObject.group.length) {
+					li.appendChild(this.dom.ul(headingObject.group, level + 1));
+				}
+			});
+			return result;
+		},
+		permalink: (heading) => {
+			const permalink = document.createElement("a");
+			const url = new URL(location);
+			url.hash = heading.id;
+			permalink.href = url.href;
+			permalink.classList.add("permalink");
+			return permalink;
+		},
+		toplink: () => {
+			const result = document.createElement("a");
+			result.classList.add("toplink");
+			const url = new URL(location);
+			url.hash = "";
+			url.search = "";
+			result.href = url.href;
+			return result;
+		},
+		link: (url = "style.css") => {
+			const link = document.createElement("link");
+			link.rel = "stylesheet";
+
+			// link.href = new URL(url, import.meta.url).href;
+			return link;
+		},
+		pin: () => {
+			const pin = document.createElement("div");
+			pin.classList.add("pin");
+			pin.addEventListener("click", (e) => {
+				e.stopPropagation();
+				this.classList.toggle("pinned");
+			});
+			return pin;
+		},
+	};
+}
+Toc.register();

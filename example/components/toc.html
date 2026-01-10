@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="../bundle.js" type="module"></script>
+  <title>Complex TOC Example</title>
+</head>
+<body>
+  <th-toc></th-toc>
+
+  <h1>Introduction</h1>
+  <p>This example demonstrates a realistic multi-level document structure. It is designed to test TOC generation, link targets, and nesting behavior up to H4 headings.</p>
+
+  <h1>Getting Started</h1>
+  <p>Basic steps to get the project running and view examples locally.</p>
+
+  <h2>Installation</h2>
+  <p>Clone the repository, install dependencies, and start the development server.</p>
+
+  <h3>Dependencies</h3>
+  <p>Node.js (LTS) and npm or yarn are required. Optional: a local static server for previews.</p>
+
+  <h3>Commands</h3>
+  <p>Common commands include <code>npm run dev</code> for development and <code>npm run build</code> for production bundles.</p>
+
+  <h2>Quick Start</h2>
+  <p>Walkthrough for creating and registering a simple component.</p>
+
+  <h3>Create the Component</h3>
+  <p>Define a class that extends <code>HTMLElement</code> or a base webponent class and register it with <code>customElements.define</code>.</p>
+
+  <h4>Template and Shadow Root</h4>
+  <p>Attach a shadow root and append template content and styles for encapsulation.</p>
+
+  <h1>Core Concepts</h1>
+  <p>Important ideas and patterns when building with web components.</p>
+
+  <h2>Shadow DOM</h2>
+  <p>Shadow DOM provides style and markup encapsulation; it prevents leakage of styles into and out of the component.</p>
+
+  <h3>Adopted Styles</h3>
+  <p>Constructable stylesheets and adoptedStyleSheets provide performant style reuse across components.</p>
+
+  <h4>Polyfills and Fallbacks</h4>
+  <p>Not all browsers support constructable stylesheets; include graceful fallbacks for broader compatibility.</p>
+
+  <h2>Custom Elements</h2>
+  <p>Custom elements expose a lifecycle (connectedCallback, disconnectedCallback, attributeChangedCallback).</p>
+
+  <h3>Properties and Attributes</h3>
+  <p>Map attributes to properties carefully and reflect changes as needed to maintain consistency.</p>
+
+  <h1>Accessibility</h1>
+  <p>Design components with ARIA, keyboard navigation, and semantic markup in mind.</p>
+
+  <h2>Keyboard Interaction</h2>
+  <p>Ensure interactive controls are reachable and operable using keyboard only.</p>
+
+  <h3>Focus Management</h3>
+  <p>Manage focus programmatically when dialogs or dynamic content is shown.</p>
+
+  <h4>Skip Links</h4>
+  <p>Consider adding skip links for long documents to improve navigation for keyboard users.</p>
+
+  <h1>Patterns and Performance</h1>
+  <p>Architectural patterns that scale as your component library grows.</p>
+
+  <h2>Composition</h2>
+  <p>Compose components using slots and well-defined public APIs to enable reuse.</p>
+
+  <h3>Event Delegation</h3>
+  <p>Use delegation for repetitive child events to reduce listener overhead.</p>
+
+  <h3>Lazy Loading</h3>
+  <p>Defer loading of non-critical modules/components to speed initial render.</p>
+
+  <h1>Examples</h1>
+  <p>Concrete examples that show common use cases and integration patterns.</p>
+
+  <h2>Documentation Page</h2>
+  <p>A standard docs page layout: TOC, content, and examples.</p>
+
+  <h3>API Reference</h3>
+  <p>List public methods, events, and configuration options for components.</p>
+
+  <h4>Method: init()</h4>
+  <p>Explains initialization steps and expected parameters.</p>
+
+  <h1>Appendix</h1>
+  <h2>Changelog</h2>
+  <p>Notes on recent updates and breaking changes.</p>
+  <h2>License</h2>
+  <p>Repository license and attribution information.</p>
+
+</body>
+</html><!DOCTYPE html>

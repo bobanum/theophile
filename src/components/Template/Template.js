@@ -1,10 +1,7 @@
-import Webponent from './Webponent.js';
+import Webponent from '../Webponent.js';
 
 export class Template extends Webponent {
 	static cache = [];
-	connectedCallback() {
-		console.log(this.href);
-	}
 	async getTemplate(url = this.url) {
 		if (Template.cache[url.pathname]) {
 			return Template.cache[url.pathname];
@@ -24,8 +21,6 @@ export class Template extends Webponent {
 			doc.querySelectorAll(`[${attr}]`).forEach(el => {
 				const attrValue = el.getAttribute(attr);
 				const url = new URL(el.getAttribute(attr), this.url);
-				console.log(attrValue, url);
-
 				el.setAttribute(attr, url.href);
 			});
 		});
@@ -47,8 +42,6 @@ export class Template extends Webponent {
 		href: {
 			type: String,
 			get: function () {
-				console.log("ok");
-
 				return this.getAttribute('href');
 			},
 			set: function (value) {

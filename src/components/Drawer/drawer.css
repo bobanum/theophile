@@ -1,0 +1,116 @@
+:host {
+	--drawer-size: 200px;
+	--handle-width: .8rem;
+	--pin-size: 1rem;
+	--hue: 210;
+	--sat: 50%;
+	--lum: 90%;
+	font-size: 1rem;
+	position: fixed;
+	left: 0;
+	box-sizing: border-box;
+	overflow: hidden;
+	transition-duration: 300ms;
+	transition-property: width;
+	transition-timing-function: ease-in;
+	z-index: 1000;
+	width: var(--handle-width);
+}
+:host(:hover) {
+	transition-delay: 750ms;
+	width: calc(var(--drawer-size) + var(--handle-width));
+}
+:host(:focus-within) {
+	width: calc(var(--drawer-size) + var(--handle-width));
+}
+:host(:not([pinned])) {
+	top: .5rem;
+	bottom: .5rem;
+	/* width: calc(var(--drawer-size) + var(--handle-width)); */
+}
+:host([pinned]) {
+	top: 0;
+	bottom: 0;
+	width: calc(var(--drawer-size) + var(--handle-width));
+	.content {
+		border-radius: 0;
+		box-shadow: none;
+	}
+	.handle {
+		display: none;
+	}
+	.pin {
+		opacity: .6;
+		&::before {
+			content: '🔒\FE0E';
+		}
+	}
+}
+*, *::before, *::after {
+	box-sizing: border-box;
+}
+main {
+	box-sizing: border-box;
+	width: var(--drawer-size);
+	overflow-y: auto;
+	height: 100%;
+	background-color: hsl(var(--hue), var(--sat), var(--lum));
+	position: absolute;
+	right: var(--handle-width);
+	border-radius: 0 1em 1em 0;
+	box-shadow: inset 0 0 10px #0003;
+}
+.pin {
+	position: absolute;
+	right: var(--handle-width);
+	top: 0;
+	font-size: var(--pin-size);
+	width: 2em;
+	height: 2em;
+	cursor: pointer;
+	z-index: 10;
+	display: grid;
+	place-items: center;
+	opacity: .3;
+
+	&::before {
+		content: '🔓\FE0E';
+		line-height: 1;
+		color: hsl(var(--hue), var(--sat), 50%);
+	}
+}
+.handle {
+	position: absolute;
+	right: 0em;
+	top: 0;
+	width: var(--handle-width);
+	height: 100%;
+	cursor: ew-resize;
+	z-index: 5;
+	display: grid;
+	place-items: center;
+	opacity: .5;
+	transition: opacity 150ms ease-in-out;
+
+	&:hover {
+		opacity: 1;
+	}
+	&::before {
+		content: '•\0A•\0A•';
+		white-space: pre;
+		position: absolute;
+		left: 0%;
+		top: 50%;
+		display: grid;
+		place-items: center;
+		font-size: .8em;
+		transform: translate(0%, -50%);
+		width: 100%;
+		height: 4em;
+		background-color: hsl(var(--hue), var(--sat), calc(var(--lum) - 20%));
+		text-shadow: 1px 1px 1px #0005, -1px -1px 1px #FFF9;
+		line-height: 1;
+		color: hsl(var(--hue), var(--sat), calc(var(--lum) - 20%));
+		border-radius: 0 1ch 1ch 0;
+	}
+}

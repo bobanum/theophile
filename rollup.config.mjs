@@ -1,6 +1,7 @@
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import terser from '@rollup/plugin-terser';
+import postcss from 'rollup-plugin-postcss';
 
 export default [
   // ESM build for modern bundlers and Node with type: module
@@ -12,7 +13,14 @@ export default [
       sourcemap: true
     },
     external: ['lodash'],
-    plugins: [resolve(), commonjs()]
+    plugins: [
+      postcss({
+        inject: false,
+        extract: false
+      }),
+      resolve(),
+      commonjs()
+    ]
   },
   // CJS build for Node.js require()
   {
@@ -23,7 +31,14 @@ export default [
       sourcemap: true
     },
     external: ['lodash'],
-    plugins: [resolve(), commonjs()]
+    plugins: [
+      postcss({
+        inject: false,
+        extract: false
+      }),
+      resolve(),
+      commonjs()
+    ]
   },
   // UMD build for CDN usage (bundles all dependencies)
   {
@@ -38,7 +53,15 @@ export default [
       }
     },
     external: ['lodash'],
-    plugins: [resolve(), commonjs(), terser()]
+    plugins: [
+      postcss({
+        inject: false,
+        extract: false
+      }),
+      resolve(),
+      commonjs(),
+      terser()
+    ]
   },
   // UMD build with all dependencies bundled (standalone)
   {
@@ -49,6 +72,14 @@ export default [
       name: 'Th2',
       sourcemap: true
     },
-    plugins: [resolve(), commonjs(), terser()]
+    plugins: [
+      postcss({
+        inject: false,
+        extract: false
+      }),
+      resolve(),
+      commonjs(),
+      terser()
+    ]
   }
 ];

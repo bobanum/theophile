@@ -6,11 +6,16 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <link rel="shortcut icon" href="favicon.svg" type="image/svg+xml">
   <script type="module" src="bundle.js"></script>
+
   <title>th2 — Vanilla JS + Node Modules</title>
 </head>
 
 <body>
+  <div is="th-template" href="template/index.html">
+    wow
+  </div>
   <th-template href="template/index.html">
+    <th-drawer style="--hue:30;--sat:0%">Drawer</th-drawer>
     <img src="img/logo.svg" alt="">
     <title-ponent level="2">allo</title-ponent>
     <h1>th2 — Vanilla JS + Node Modules (esbuild)</h1>

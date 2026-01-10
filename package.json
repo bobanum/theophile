@@ -18,10 +18,10 @@
   ],
   "sideEffects": true,
   "scripts": {
-    "dev": "esbuild src/main.js --bundle --servedir=example --outfile=example/bundle.js --sourcemap",
+    "dev": "esbuild src/main.js --bundle --servedir=example --outfile=example/bundle.js --sourcemap --loader:.css=text",
     "build": "npm run build:rollup && npm run build:esbuild",
     "build:rollup": "rollup -c",
-    "build:esbuild": "esbuild src/main.js --bundle --minify --outfile=example/bundle.js",
+    "build:esbuild": "esbuild src/main.js --bundle --minify --outfile=example/bundle.js --loader:.css=text",
     "build:watch": "rollup -c -w",
     "prepublishOnly": "npm run build:rollup",
     "publish:gh-pages": "npm run build:esbuild && npx gh-pages -d example"
@@ -36,6 +36,7 @@
     "@rollup/plugin-terser": "^0.4.0",
     "esbuild": "^0.27.2",
     "gh-pages": "^5.0.0",
-    "rollup": "^4.0.0"
+    "rollup": "^4.0.0",
+    "rollup-plugin-postcss": "^4.0.2"
   }
 }
