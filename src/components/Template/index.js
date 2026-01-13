@@ -1,16 +1,24 @@
 import Webponent from '../Webponent.js';
 
 export class Template extends Webponent {
-	static cache = [];
-	async getTemplate(url = this.url) {
-		if (Template.cache[url.pathname]) {
-			return Template.cache[url.pathname];
+	static cache = {};
+	static getTemplate(url = this.url) {
+		if (!this.cache[url.pathname]) {
+			this.cache[url.pathname] = fetch(url).then(response => response.text());
 		}
-		const response = await fetch(url);
-		const text = await response.text();
+		if (!(this.cache[url.pathname] instanceof Promise)) {
+			return Promise.resolve(this.cache[url.pathname]);
+		}
+		return this.cache[url.pathname].then(text => {
+			const domParser = new DOMParser();
+			const doc = domParser.parseFromString(text, 'text/html');
+			this.cache[url.pathname] = doc;
+			return doc;
+		});
+	}
+	parseText(text) {
 		const domParser = new DOMParser();
 		const doc = domParser.parseFromString(text, 'text/html');
-		Template.cache[url.pathname] = doc;
 		return doc;
 	}
 	convertUrls(doc) {
@@ -20,8 +28,12 @@ export class Template extends Webponent {
 		attributes.forEach(attr => {
 			doc.querySelectorAll(`[${attr}]`).forEach(el => {
 				const attrValue = el.getAttribute(attr);
-				const url = new URL(el.getAttribute(attr), this.url);
-				el.setAttribute(attr, url.href);
+				
+				if (attrValue.startsWith('~/')) {
+					el.setAttribute(attr, new URL(attrValue.slice(2), this.url).href);
+				} else {
+					el.setAttribute(attr, new URL(attrValue, location).href);
+				}
 			});
 		});
 	}
@@ -46,7 +58,7 @@ export class Template extends Webponent {
 			},
 			set: function (value) {
 				this.url = value;
-				this.getTemplate(this.url).then((doc) => {
+				Template.getTemplate(this.url).then((doc) => {
 					this.shadowRoot.innerHTML = "";
 
 					const element = (this.url.hash) ? doc.querySelector(this.url.hash) : (doc.querySelector("template:not([id])") || doc.querySelector("template"));
@@ -55,12 +67,12 @@ export class Template extends Webponent {
 						this.convertUrls(tpl);
 						this.shadowRoot.appendChild(tpl);
 					} else {
-						this.shadowRoot.innerHTML = `<p>Template not found.</p>`;
+						this.shadowRoot.innerHTML = `<p>Template "${this.url.href}" not found.</p>`;
 					}
 				});
 			},
 		},
 	};
 }
-Template.register();
+Template.register("template");
 export default Template;

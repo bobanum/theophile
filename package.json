@@ -18,13 +18,13 @@
   ],
   "sideEffects": true,
   "scripts": {
-    "dev": "esbuild src/main.js --bundle --servedir=example --outfile=example/bundle.js --sourcemap --loader:.css=text",
+    "dev": "esbuild src/main.js --bundle --servedir=examples --outfile=examples/bundle.js --sourcemap --loader:.css=text",
     "build": "npm run build:rollup && npm run build:esbuild",
     "build:rollup": "rollup -c",
-    "build:esbuild": "esbuild src/main.js --bundle --minify --outfile=example/bundle.js --loader:.css=text",
+    "build:esbuild": "esbuild src/main.js --bundle --minify --outfile=examples/bundle.js --loader:.css=text",
     "build:watch": "rollup -c -w",
     "prepublishOnly": "npm run build:rollup",
-    "publish:gh-pages": "npm run build:esbuild && npx gh-pages -d example"
+    "publish:gh-pages": "npm run build:esbuild && npx gh-pages -d examples"
   },
   "dependencies": {
     "@bobanum/webponents": "github:bobanum/webponents",

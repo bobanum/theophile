@@ -14,7 +14,7 @@
 		<slot></slot>
 	</template>
 	<template>
-		<link rel="stylesheet" href="css/style.css">
+		<link rel="stylesheet" href="~/css/style.css">
 		<header class="site-header">
 			<div class="container">
 				<a class="brand" href="#">
@@ -23,15 +23,15 @@
 				</a>
 				<nav class="main-nav" aria-label="Main navigation">
 					<ul>
-						<li><a href="#">Home</a></li>
-						<li><a href="#">About</a></li>
-						<li><a href="#">Services</a></li>
-						<li><a href="#">Contact</a></li>
+						<li><a href="/home.html">Home</a></li>
+						<li><a href="/about.html">About</a></li>
+						<li><a href="/services.html">Services</a></li>
+						<li><a href="/contact.html">Contact</a></li>
 					</ul>
 				</nav>
 			</div>
-			<drawer-ponent>
-				<th-toc>
+			<drawer-ponent style="--hue:0;" side="left" width="250px">
+				<th-toc style="padding:2em 1em 1em 1em;">
 					<h2>Table of Contents</h2>
 				</th-toc>
 			</drawer-ponent>

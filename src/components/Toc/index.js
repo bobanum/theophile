@@ -144,4 +144,4 @@ export default class Toc extends Webponent {
 		},
 	};
 }
-Toc.register();
+Toc.register("toc");

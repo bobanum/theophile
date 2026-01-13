@@ -1,3 +1,4 @@
 {
-	"svg.preview.background": "transparent"
+	"fiveserver.root": ".",
+	"fiveserver.port": 5555
 }

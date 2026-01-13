@@ -1,4 +1,7 @@
-slot[name="header"] {
+:host {
+    display: block;
+}
+/* slot[name="header"] {
     display: block;
     padding: .5ch;
     font-size: 1.2em;
@@ -8,13 +11,12 @@ slot[name="header"] {
     margin-bottom: .5em;
     &:empty {
         opacity: .5;
-        /* display: none; */
     }
-}
+} */
 ul {
     margin: 0;
     padding: 0;
-    padding-inline: 2ch;
+    padding-left: 2ch;
 }
 
 .no-heading::marker {
@@ -68,24 +70,4 @@ a {
 
 .level-1>div {
     font-weight: bold;
-}
-
-/* .level-1 li:not(:hover):not(.current-within)>ul {
-    display: none;
-} */
-
-.current-within li>ul,
-:hover li>ul {
-    display: block !important;
-}
-
-:host(:hover) {
-    transition-delay: var(--delay);
-    transition-timing-function: ease-out;
-    left: 0;
-    box-shadow: 0.2ch 0 0.3ch #0008;
-
-    &::after {
-        opacity: 1;
-    }
 }

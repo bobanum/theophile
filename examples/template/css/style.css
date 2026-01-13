@@ -6,7 +6,7 @@
 }
 
 html,
-body {
+body, :host {
     min-height: 100vh;
 }
 

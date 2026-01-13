@@ -7,17 +7,14 @@
   <link rel="shortcut icon" href="favicon.svg" type="image/svg+xml">
   <script type="module" src="bundle.js"></script>
 
-  <title>th2 — Vanilla JS + Node Modules</title>
+  <title>th2 z— Vanilla JS + Node Modules</title>
 </head>
 
-<body>
-  <div is="th-template" href="template/index.html">
-    wow
-  </div>
+<body is="th-template" href="template/index.html#cool">
   <th-template href="template/index.html">
-    <th-drawer style="--hue:30;--sat:0%">Drawer</th-drawer>
+    <h1 is="th-title"><s>À mettre à la fin</s> <b slot="before">The title : </b><i slot="after"> ... was The title</i></h1>
+    <!-- <drawer-ponent>Drawer again</drawer-ponent> -->
     <img src="img/logo.svg" alt="">
-    <title-ponent level="2">allo</title-ponent>
     <h1>th2 — Vanilla JS + Node Modules (esbuild)</h1>
     <div id="app">Loading…</div>
     <fielset>
