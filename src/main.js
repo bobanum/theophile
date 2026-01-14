@@ -4,5 +4,6 @@ import '@bobanum/webponents';
 
 import './components/Template/index.js';
 import './components/Toc/index.js';
-import './components/Title.js';
+import './components/Title/index.js';
+import './components/Include/index.js';
 

@@ -22,7 +22,7 @@ export class Template extends Webponent {
 		return doc;
 	}
 	convertUrls(doc) {
-		if (!this.href.includes("/")) return;
+		if (this.href.match(/^[^\/]+\.html(#.*)?$/)) return;
 		const attributes = ['href', 'src', 'action', 'data'];
 
 		attributes.forEach(attr => {
@@ -31,6 +31,8 @@ export class Template extends Webponent {
 				
 				if (attrValue.startsWith('~/')) {
 					el.setAttribute(attr, new URL(attrValue.slice(2), this.url).href);
+				} else if (attrValue.startsWith('././')) {
+					el.setAttribute(attr, new URL(attrValue.slice(4), this.url).href);
 				} else {
 					el.setAttribute(attr, new URL(attrValue, location).href);
 				}
@@ -57,6 +59,11 @@ export class Template extends Webponent {
 				return this.getAttribute('href');
 			},
 			set: function (value) {
+				console.log(value);
+				
+				if (!value.match(/\.html(#.*)?$/)) {
+					value = value.replace(/\/?(#.*)?$/, "/index.html$1")
+				}
 				this.url = value;
 				Template.getTemplate(this.url).then((doc) => {
 					this.shadowRoot.innerHTML = "";
