@@ -1,14 +1,7 @@
 import Webponent from "../Webponent.js";
 
 export class Include extends Webponent {
-	constructor() {
-		super();
-		console.log(this);
-		
-	}
 	connectedCallback() {
-		console.log("connected");
-		
 		this.shadowRoot.appendChild(this.dom.main());
 	}
 	static properties = {
@@ -20,13 +13,11 @@ export class Include extends Webponent {
 					const doc = this.parseHTML(text);
 					this.innerHTML = '';
 					this.head.innerHTML = '';
-					// console.log(doc);
 					
-					// while (doc.head.firstChild) {
-					// 	this.head.appendChild(doc.head.firstChild);
-					// }
-					console.log(doc);
-					
+					const styles = doc.head.querySelectorAll('style, link[rel="stylesheet"]');
+					styles.forEach(style => {
+						this.head.appendChild(style);
+					});
 					while (doc.body.firstChild) {
 						this.appendChild(doc.body.firstChild);
 					}
