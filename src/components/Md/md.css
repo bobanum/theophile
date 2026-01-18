@@ -1,0 +1,7 @@
+:host {
+	display: block;
+}
+
+[slot="content"] {
+	display: contents;
+}

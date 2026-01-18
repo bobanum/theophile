@@ -28,7 +28,10 @@
   },
   "dependencies": {
     "@bobanum/webponents": "github:bobanum/webponents",
-    "lodash": "^4.17.21"
+    "dompurify": "^3.3.1",
+    "highlight.js": "^11.11.1",
+    "lodash": "^4.17.21",
+    "marked": "^17.0.1"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.0",
