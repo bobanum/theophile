@@ -11,8 +11,18 @@ export class Md extends Webponent {
 	constructor() {
 		super();
 		this.parser = (marked.parse || marked);
+		this.observer = new MutationObserver(this.observe.bind(this));
+		this.observer.observe(this, { subtree: true, characterData: true });
 	}
-
+	observe(mutationsList) {
+		for (var mutation of mutationsList) {
+			if (mutation.type == "characterData") {
+				let content = this.cloneNode(true);
+				[...content.querySelectorAll('[slot]')].forEach(node => node.remove());
+				this.setContent('inline', content);
+			}
+		}
+	}
 	connectedCallback() {
 		this.shadowRoot.appendChild(super.dom.style(highlight));
 		this.shadowRoot.appendChild(super.dom.style(styles));
@@ -21,9 +31,7 @@ export class Md extends Webponent {
 	evt = {
 		slotchange: e => {
 			let content = e.target.assignedNodes().map(e => (e.outerHTML || e.textContent)).join('');
-			// this._container.innerHTML = this.parse(content);
-			this.appendChild(this.dom.inlineContent(this.parse(content)));
-			this.highlight();
+			this.setContent('inline', content);
 		}
 	};
 	attributeChangedCallback(name, oldVal, newVal) {
@@ -38,9 +46,7 @@ export class Md extends Webponent {
 		return fetch(url)
 			.then(res => res.text())
 			.then(content => {
-				this.querySelectorAll('[slot="src-content"]').forEach(node => node.remove());
-				this.appendChild(this.dom.srcContent(this.parse(content)));
-				this.highlight();
+				this.setContent('src', content);
 			})
 			.catch(e => {
 				console.error('Md: failed to load src', e);
@@ -51,10 +57,14 @@ export class Md extends Webponent {
 		const dirty = toHtml(markdown);
 		return this.sanitize(dirty);
 	}
-
-	highlight() {
-		if (!this._container) return;
-		const blocks = this._container.querySelectorAll('pre code');
+	setContent(prefix, markdown) {
+		markdown = markdown.innerHTML || markdown;
+		this.querySelectorAll(`[slot="${prefix}-content"]`).forEach(node => node.remove());
+		this.appendChild(this.dom.content(prefix, this.parse(markdown)));
+	}
+	highlight(container) {
+		if (!container) return;
+		const blocks = container.querySelectorAll('pre code');
 		blocks.forEach(block => {
 			try {
 				hljs.highlightElement(block);
@@ -66,12 +76,12 @@ export class Md extends Webponent {
 			const result = document.createDocumentFragment();
 			const styleSlot = document.createElement("slot");
 			styleSlot.name = "style";
-			styleSlot.addEventListener('slotchange', ({target}) => {
+			styleSlot.addEventListener('slotchange', ({ target }) => {
 				const assigned = target.assignedNodes();
 				assigned.forEach(node => {
 					console.log(node);
-						
-					
+
+
 					// target.appendChild(node);
 				});
 			});
@@ -86,19 +96,13 @@ export class Md extends Webponent {
 			slot.style.display = "none";
 			slot.addEventListener('slotchange', this.evt.slotchange);
 			result.appendChild(slot);
-			this._container = inlineContentSlot;
 			return result;
 		},
-		inlineContent: (content) => {
+		content: (prefix, content) => {
 			const result = document.createElement("div");
-			result.slot = "inline-content";
+			result.slot = `${prefix}-content`;
 			result.innerHTML = content;
-			return result;
-		},
-		srcContent: (content) => {
-			const result = document.createElement("div");
-			result.slot = "src-content";
-			result.innerHTML = content;
+			this.highlight(result);
 			return result;
 		}
 	};
