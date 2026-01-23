@@ -1,0 +1,153 @@
+.navigation {
+    font-size: 2vmax;
+    --gradient-start: #aaa6;
+    --gradient-end: #aaa0;
+    display: grid;
+    grid-template-columns: 15px min-content 1fr min-content 15px;
+    grid-template-rows: min-content 1fr min-content;
+	grid-template-columns: [slide-start left] 4em [center] 1fr [right] 4em [slide-end];
+	grid-template-rows: [slide-start top] 2em [middle] 1fr [bottom] 2em [slide-end];
+    pointer-events: none;
+    grid-area: slideshow;
+    >* {
+        pointer-events: all;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Material Icons";
+        opacity: 0;
+        color: white;
+        text-shadow: 0.1em 0.1em 0.1em #0008;
+        position: relative;
+        transition-property: opacity;
+        transition-duration: 0.5s;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+
+    .previous,
+    .next {
+        justify-self: stretch;
+        font-size: 3em;
+    }
+
+    .previous {
+        background-image: radial-gradient(farthest-side at left center, var(--gradient-start), var(--gradient-end));
+        grid-row: middle;
+        grid-column: left;
+
+        &::before {
+            content: "arrow_back";
+        }
+    }
+
+    .next {
+        background-image: radial-gradient(farthest-side at right center, var(--gradient-start), var(--gradient-end));
+        grid-row: middle;
+        grid-column: right;
+
+        &::before {
+            content: "arrow_forward";
+        }
+    }
+
+    .first,
+    .last {
+        grid-row: middle;
+        width: 1em;
+
+        &::before {
+            position: absolute;
+        }
+
+        &:not(:hover)::before {
+            display: none;
+        }
+    }
+
+    .first {
+        background-image: radial-gradient(farthest-side at left center, var(--gradient-start), var(--gradient-end));
+        grid-column: left;
+        justify-self: start;
+
+        &::before {
+            content: "first_page";
+        }
+    }
+
+    .last {
+        background-image: radial-gradient(farthest-side at right center, var(--gradient-start), var(--gradient-end));
+        grid-column: right;
+        justify-self: end;
+
+        &::before {
+            content: "last_page";
+        }
+    }
+
+    .options {
+        background-image: radial-gradient(farthest-side at bottom center, var(--gradient-start), var(--gradient-end));
+        grid-row: bottom;
+        grid-column: 1 / -1;
+        align-items: stretch;
+
+        >* {
+            padding: 0.25em;
+            cursor: pointer;
+            flex: 0 0 2em;
+            gap: 1em;
+            width: 2em;
+            opacity: 0.5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            &:hover {
+                opacity: 1;
+                background-image: linear-gradient(to bottom, #fff0, #fff4);
+            }
+        }
+
+        .th-option-contactsheet {
+            &::before {
+                content: "calendar_view_month";
+            }
+        }
+
+        .th-option-stopslideshow {
+            margin-left: auto;
+
+            &::before {
+                content: "cancel_presentation";
+            }
+        }
+
+        .th-option-slideshow {
+            &::before {
+                content: "crop_16_9";
+            }
+        }
+
+        .th-option-continous {
+            &::before {
+                content: "splitscreen";
+            }
+        }
+
+        .th-option-print {
+            &::before {
+                content: "print";
+            }
+        }
+
+        .th-option-menu {
+            margin-right: auto;
+
+            &::before {
+                content: "menu";
+            }
+        }
+    }
+}

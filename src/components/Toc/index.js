@@ -1,7 +1,7 @@
 import Webponent from "../Webponent.js";
 import styles from './toc.css';
 
-export default class Toc extends Webponent {
+export class Toc extends Webponent {
 	constructor() {
 		super();
 	}
@@ -145,3 +145,4 @@ export default class Toc extends Webponent {
 	};
 }
 Toc.register("toc");
+export default Toc;
