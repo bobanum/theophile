@@ -922,7 +922,7 @@ export default class Slide extends Plugin {
 				}
 				e.stopPropagation();
 				e.preventDefault();
-				this.startSlideshow();
+				// this.startSlideshow();
 
 				return false;
 			}
